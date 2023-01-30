@@ -1,11 +1,24 @@
 #define BOOST_TEST_MODULE metsi
+#include <functional>
 #include <boost/test/unit_test.hpp>
-#include "add.hpp"
+#include "event_graph.hpp"
 
-BOOST_AUTO_TEST_CASE(simple_addition_works)
+int op(int a) {
+    return a + 1;
+};
+
+BOOST_AUTO_TEST_CASE(event_graph_initialization)
 {
-    int a = 1;
-    int b = 2;
-    int result = add(a, b);
-    BOOST_CHECK(result == a + b);
+    EventDAG<int> g(op);
+    std::vector<EventDAG<int>> leaves = g.find_leaf_nodes();
+    BOOST_CHECK(leaves.size() == 0);
+};
+
+BOOST_AUTO_TEST_CASE(evalute_sequence)
+{
+    EventDAG<int> root(op);
+    root.add_branch(op);
+    std::vector<int> depth_results = root.evaluate_depth(0);
+    BOOST_CHECK(depth_results.size() == 1);
+    BOOST_CHECK(depth_results.front() == 2);
 };

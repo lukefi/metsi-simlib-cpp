@@ -9,10 +9,10 @@ set(METSI_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(METSI_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 set(METSI_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
-set(ADD_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/add)
+set(SIM_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/sim)
 
 include_directories(${METSI_INSTALL_INCLUDE_DIR})
-include_directories(${ADD_HEADERS_DIR})
+include_directories(${SIM_HEADERS_DIR})
 
 add_subdirectory(src)
 add_subdirectory(tests)

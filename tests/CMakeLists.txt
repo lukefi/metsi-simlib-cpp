@@ -7,4 +7,4 @@ include(CTest)
 include(BoostTestHelpers.cmake)
 
 include_directories(${SIM_HEADERS_DIR})
-add_boost_test(test_suite.cpp)
+add_boost_test(event_graph.cpp)

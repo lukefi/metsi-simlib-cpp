@@ -8,3 +8,4 @@ include(BoostTestHelpers.cmake)
 
 include_directories(${SIM_HEADERS_DIR})
 add_boost_test(event_graph.cpp)
+add_boost_test(branching_generators.cpp)

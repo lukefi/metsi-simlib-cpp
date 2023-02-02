@@ -9,15 +9,15 @@ int op(int a) {
 
 BOOST_AUTO_TEST_CASE(event_graph_initialization)
 {
-    EventNode<int> g = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> g = EventDAG<int>::new_node(op);
     LeafNodes<int> leaves = g->collect_leaf_nodes();
     BOOST_CHECK(leaves.size() == 1);
 };
 
 BOOST_AUTO_TEST_CASE(evalute_sequence)
 {
-    EventNode<int> root = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> follower = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> root = EventDAG<int>::new_node(op);
+    EventNode<int> follower = EventDAG<int>::new_node(op);
     root->add_node(follower);
     OperationResults<int> depth_results = root->evaluate_depth(0);
     BOOST_CHECK(depth_results.size() == 1);
@@ -31,12 +31,12 @@ BOOST_AUTO_TEST_CASE(evaluate_three_paths_graph)
          -> b2s1 -> leaf1           => 3
                  -> b2s2   -> leaf2 => 4
     */
-    EventNode<int> root = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> b1 = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> b2s1 = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> b2s2 = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> leaf1 = std::make_shared<EventDAG<int>>(op);
-    EventNode<int> leaf2 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> root = EventDAG<int>::new_node(op);
+    EventNode<int> b1 = EventDAG<int>::new_node(op);
+    EventNode<int> b2s1 = EventDAG<int>::new_node(op);
+    EventNode<int> b2s2 = EventDAG<int>::new_node(op);
+    EventNode<int> leaf1 = EventDAG<int>::new_node(op);
+    EventNode<int> leaf2 = EventDAG<int>::new_node(op);
 
     root->add_node(b1);
     b1->add_node(leaf1);

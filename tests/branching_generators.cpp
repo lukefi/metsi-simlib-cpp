@@ -21,9 +21,9 @@ BOOST_AUTO_TEST_CASE(sequence_works)
     operations.push_back(increment);
     operations.push_back(increment);
 
-    EventNode<int> root = std::make_shared<EventDAG<int>>(increment);
-    EventNode<int> b1 = std::make_shared<EventDAG<int>>(increment);
-    EventNode<int> b2 = std::make_shared<EventDAG<int>>(increment);
+    EventNode<int> root = EventDAG<int>::new_node(increment);
+    EventNode<int> b1 = EventDAG<int>::new_node(increment);
+    EventNode<int> b2 = EventDAG<int>::new_node(increment);
     root->add_node(b1);
     root->add_node(b2);
 
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(alternatives_works)
     operations.push_back(increment);
     operations.push_back(increment);
 
-    EventNode<int> root = std::make_shared<EventDAG<int>>(increment);
+    EventNode<int> root = EventDAG<int>::new_node(increment);
     LeafNodes<int> leafs = root->collect_leaf_nodes();
     BOOST_CHECK(leafs.size() == 1);
     BOOST_CHECK(leafs.contains(root));
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(generator_combination_works)
     operations.push_back(increment);
     operations.push_back(increment);
 
-    EventNode<int> root = std::make_shared<EventDAG<int>>(increment);
+    EventNode<int> root = EventDAG<int>::new_node(increment);
     LeafNodes<int> level_0 = root->collect_leaf_nodes();
     BOOST_CHECK(level_0.size() == 1);
     LeafNodes<int> level_1 = sequence<int>(level_0, operations);
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(multiple_operations_work)
     operations.push_back(increment);
     operations.push_back(decrement);
 
-    EventNode<int> root = std::make_shared<EventDAG<int>>(increment);
+    EventNode<int> root = EventDAG<int>::new_node(increment);
     LeafNodes<int> level_0 = root->collect_leaf_nodes();
     LeafNodes<int> level_1 = sequence<int>(level_0, operations);
     LeafNodes<int> level_2 = alternatives<int>(level_1, operations);

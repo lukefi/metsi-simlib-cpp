@@ -14,14 +14,14 @@ class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
     private:
     typename Operation<T>::fn operation;
     std::vector<std::shared_ptr<EventDAG<T>>> followers;
+    bool is_leaf();
 
     public:
     EventDAG(typename Operation<T>::fn);
-    void add_branch(typename Operation<T>::fn);
     void add_node(std::shared_ptr<EventDAG<T>>);
-    bool is_leaf();
     std::set<std::shared_ptr<EventDAG<T>>> collect_leaf_nodes();
     std::vector<T> evaluate_depth(T);
+    static std::shared_ptr<EventDAG<T>> new_node(typename Operation<T>::fn);
 };
 
 template<typename T>
@@ -33,12 +33,6 @@ using OperationResults = std::vector<T>;
 
 template<typename T>
 EventDAG<T>::EventDAG(typename Operation<T>::fn op): operation(op) {};
-
-template<typename T> 
-void EventDAG<T>::add_branch(typename Operation<T>::fn op) {
-    EventDAG next(op);
-    this->followers.push_back(&next);
-}
 
 template<typename T>
 LeafNodes<T> EventDAG<T>::collect_leaf_nodes() {
@@ -88,4 +82,9 @@ OperationResults<T> EventDAG<T>::evaluate_depth(T payload) {
         }        
     }
     return results;
+}
+
+template<typename T>
+EventNode<T> EventDAG<T>::new_node(typename Operation<T>::fn op) {
+    return std::make_shared<EventDAG<T>>(op);
 }

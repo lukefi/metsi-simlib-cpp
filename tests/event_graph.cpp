@@ -9,17 +9,17 @@ int op(int a) {
 
 BOOST_AUTO_TEST_CASE(event_graph_initialization)
 {
-    std::shared_ptr<EventDAG<int>> g = std::make_shared<EventDAG<int>>(op);
-    std::set<std::shared_ptr<EventDAG<int>>> leaves = g->collect_leaf_nodes();
+    EventNode<int> g = std::make_shared<EventDAG<int>>(op);
+    LeafNodes<int> leaves = g->collect_leaf_nodes();
     BOOST_CHECK(leaves.size() == 1);
 };
 
 BOOST_AUTO_TEST_CASE(evalute_sequence)
 {
-    std::shared_ptr<EventDAG<int>> root = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> follower = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> root = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> follower = std::make_shared<EventDAG<int>>(op);
     root->add_node(follower);
-    std::vector<int> depth_results = root->evaluate_depth(0);
+    OperationResults<int> depth_results = root->evaluate_depth(0);
     BOOST_CHECK(depth_results.size() == 1);
     BOOST_CHECK(depth_results.front() == 2);
 };
@@ -31,12 +31,12 @@ BOOST_AUTO_TEST_CASE(evaluate_three_paths_graph)
          -> b2s1 -> leaf1           => 3
                  -> b2s2   -> leaf2 => 4
     */
-    std::shared_ptr<EventDAG<int>> root = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> b1 = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> b2s1 = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> b2s2 = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> leaf1 = std::make_shared<EventDAG<int>>(op);
-    std::shared_ptr<EventDAG<int>> leaf2 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> root = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> b1 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> b2s1 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> b2s2 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> leaf1 = std::make_shared<EventDAG<int>>(op);
+    EventNode<int> leaf2 = std::make_shared<EventDAG<int>>(op);
 
     root->add_node(b1);
     b1->add_node(leaf1);
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(evaluate_three_paths_graph)
     b2s1->add_node(b2s2);
     b2s2->add_node(leaf2);
 
-    std::vector<int> depth_results = root->evaluate_depth(0);
+    OperationResults<int> depth_results = root->evaluate_depth(0);
     BOOST_CHECK(root->collect_leaf_nodes().size() == 2);
     BOOST_CHECK(b1->collect_leaf_nodes().size() == 1);
     BOOST_CHECK(b2s1->collect_leaf_nodes().size() == 2);

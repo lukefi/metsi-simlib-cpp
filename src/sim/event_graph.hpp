@@ -8,6 +8,7 @@ struct Operation {
     typedef std::function<T(T)> fn;
 };
 
+
 template<typename T>
 class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
     private:
@@ -24,6 +25,13 @@ class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
 };
 
 template<typename T>
+using EventNode = std::shared_ptr<EventDAG<T>>;
+template<typename T>
+using LeafNodes = std::set<EventNode<T>>;
+template<typename T>
+using OperationResults = std::vector<T>;
+
+template<typename T>
 EventDAG<T>::EventDAG(typename Operation<T>::fn op): operation(op) {};
 
 template<typename T> 
@@ -33,8 +41,8 @@ void EventDAG<T>::add_branch(typename Operation<T>::fn op) {
 }
 
 template<typename T>
-std::set<std::shared_ptr<EventDAG<T>>> EventDAG<T>::collect_leaf_nodes() {
-    std::set<std::shared_ptr<EventDAG<T>>> results;
+LeafNodes<T> EventDAG<T>::collect_leaf_nodes() {
+    LeafNodes<T> results;
     
     if(this->is_leaf()) {
         results.insert(this->shared_from_this());
@@ -45,7 +53,7 @@ std::set<std::shared_ptr<EventDAG<T>>> EventDAG<T>::collect_leaf_nodes() {
                 results.insert(n);
             }
             else {
-                std::set<std::shared_ptr<EventDAG<T>>> sub_results = n->collect_leaf_nodes();
+                LeafNodes<T> sub_results = n->collect_leaf_nodes();
                 for(auto& sub_result : sub_results) {
                     results.insert(sub_result);
                 }
@@ -62,20 +70,20 @@ bool EventDAG<T>::is_leaf() {
 }
 
 template<typename T>
-void EventDAG<T>::add_node(std::shared_ptr<EventDAG<T>> next) {
+void EventDAG<T>::add_node(EventNode<T> next) {
     this->followers.push_back(next);
 }
 
 template<typename T>
-std::vector<T> EventDAG<T>::evaluate_depth(T payload) {
-    std::vector<T> results;
+OperationResults<T> EventDAG<T>::evaluate_depth(T payload) {
+    OperationResults<T> results;
     T current = this->operation(payload);
     if(this->is_leaf()) {
         results.push_back(current);
     }
     else {
         for(auto n : this->followers) {
-            std::vector<T> sub_results = n->evaluate_depth(current);
+            OperationResults<T> sub_results = n->evaluate_depth(current);
             results.insert(results.end(), sub_results.begin(), sub_results.end());
         }        
     }

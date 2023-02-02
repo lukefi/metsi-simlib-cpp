@@ -5,20 +5,24 @@
 #include <set>
 #include "branching_generators.hpp"
 
-int op(int a) {
+int increment(int a) {
     return a + 1;
 };
+
+int decrement(int a) {
+    return a - 1;
+}
 
 BOOST_AUTO_TEST_CASE(sequence_works) 
 {
     std::vector<typename Operation<int>::fn> operations;
-    operations.push_back(op);
-    operations.push_back(op);
-    operations.push_back(op);
+    operations.push_back(increment);
+    operations.push_back(increment);
+    operations.push_back(increment);
 
-    EventDAG<int>* root = new EventDAG<int>(op);
-    EventDAG<int>* b1 = new EventDAG<int>(op);
-    EventDAG<int>* b2 = new EventDAG<int>(op);
+    EventDAG<int>* root = new EventDAG<int>(increment);
+    EventDAG<int>* b1 = new EventDAG<int>(increment);
+    EventDAG<int>* b2 = new EventDAG<int>(increment);
     root->add_node(b1);
     root->add_node(b2);
 
@@ -43,10 +47,10 @@ BOOST_AUTO_TEST_CASE(sequence_works)
 BOOST_AUTO_TEST_CASE(alternatives_works) 
 {
     std::vector<typename Operation<int>::fn> operations;
-    operations.push_back(op);
-    operations.push_back(op);
+    operations.push_back(increment);
+    operations.push_back(increment);
 
-    EventDAG<int>* root = new EventDAG<int>(op);
+    EventDAG<int>* root = new EventDAG<int>(increment);
     std::set<EventDAG<int>*> leafs = root->collect_leaf_nodes();
     BOOST_CHECK(leafs.size() == 1);
     BOOST_CHECK(leafs.contains(root));
@@ -65,10 +69,10 @@ BOOST_AUTO_TEST_CASE(alternatives_works)
 BOOST_AUTO_TEST_CASE(generator_combination_works)
 {
     std::vector<typename Operation<int>::fn> operations;
-    operations.push_back(op);
-    operations.push_back(op);
+    operations.push_back(increment);
+    operations.push_back(increment);
 
-    EventDAG<int>* root = new EventDAG<int>(op);
+    EventDAG<int>* root = new EventDAG<int>(increment);
     std::set<EventDAG<int>*> level_0 = root->collect_leaf_nodes();
     BOOST_CHECK(level_0.size() == 1);
     std::set<EventDAG<int>*> level_1 = sequence<int>(level_0, operations);
@@ -90,3 +94,25 @@ BOOST_AUTO_TEST_CASE(generator_combination_works)
     BOOST_CHECK(results[2] == 7);
     BOOST_CHECK(results[3] == 7);
 };
+
+BOOST_AUTO_TEST_CASE(multiple_operations_work)
+{
+    std::vector<typename Operation<int>::fn> operations;
+    operations.push_back(increment);
+    operations.push_back(decrement);
+
+        EventDAG<int>* root = new EventDAG<int>(increment);
+    std::set<EventDAG<int>*> level_0 = root->collect_leaf_nodes();
+    std::set<EventDAG<int>*> level_1 = sequence<int>(level_0, operations);
+    std::set<EventDAG<int>*> level_2 = alternatives<int>(level_1, operations);
+    std::set<EventDAG<int>*> level_3 = sequence<int>(level_2, operations);
+    std::set<EventDAG<int>*> level_4 = alternatives<int>(level_3, operations);
+
+    std::vector<int> results = root->evaluate_depth(0);
+    BOOST_CHECK(results.size() == 4);
+    // sequences result in no change as increment, decrement.
+    BOOST_CHECK(results[0] == 3);  // alternatives increment, increment
+    BOOST_CHECK(results[1] == 1);  // alternatives increment, decrement
+    BOOST_CHECK(results[2] == 1);  // alternatives decrement, increment
+    BOOST_CHECK(results[3] == -1); // alternatives decrement, decrement
+}

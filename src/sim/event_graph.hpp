@@ -1,6 +1,7 @@
 #include <functional>
 #include <vector>
 #include <set>
+#include <memory>
 
 template<typename T>
 struct Operation {
@@ -8,21 +9,18 @@ struct Operation {
 };
 
 template<typename T>
-class EventDAG {
+class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
     private:
     typename Operation<T>::fn operation;
-    std::vector<EventDAG<T>*> followers;
+    std::vector<std::shared_ptr<EventDAG<T>>> followers;
 
     public:
     EventDAG(typename Operation<T>::fn);
     void add_branch(typename Operation<T>::fn);
-    void add_node(EventDAG<T>*);
+    void add_node(std::shared_ptr<EventDAG<T>>);
     bool is_leaf();
-    std::set<EventDAG<T>*> collect_leaf_nodes();
+    std::set<std::shared_ptr<EventDAG<T>>> collect_leaf_nodes();
     std::vector<T> evaluate_depth(T);
-    
-    
-
 };
 
 template<typename T>
@@ -35,11 +33,11 @@ void EventDAG<T>::add_branch(typename Operation<T>::fn op) {
 }
 
 template<typename T>
-std::set<EventDAG<T>*> EventDAG<T>::collect_leaf_nodes() {
-    std::set<EventDAG<T>*> results;
+std::set<std::shared_ptr<EventDAG<T>>> EventDAG<T>::collect_leaf_nodes() {
+    std::set<std::shared_ptr<EventDAG<T>>> results;
     
     if(this->is_leaf()) {
-        results.insert(this);
+        results.insert(this->shared_from_this());
     }
     else {
         for(auto& n : this->followers) {
@@ -47,7 +45,7 @@ std::set<EventDAG<T>*> EventDAG<T>::collect_leaf_nodes() {
                 results.insert(n);
             }
             else {
-                std::set<EventDAG<T>*> sub_results = n->collect_leaf_nodes();
+                std::set<std::shared_ptr<EventDAG<T>>> sub_results = n->collect_leaf_nodes();
                 for(auto& sub_result : sub_results) {
                     results.insert(sub_result);
                 }
@@ -64,7 +62,7 @@ bool EventDAG<T>::is_leaf() {
 }
 
 template<typename T>
-void EventDAG<T>::add_node(EventDAG<T>* next) {
+void EventDAG<T>::add_node(std::shared_ptr<EventDAG<T>> next) {
     this->followers.push_back(next);
 }
 

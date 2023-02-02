@@ -1,15 +1,16 @@
+#include <memory>
 #include "event_graph.hpp"
 
 template<typename T>
-std::set<EventDAG<T>*> sequence(std::set<EventDAG<T>*> previous, std::vector<typename Operation<T>::fn> operations) {
+std::set<std::shared_ptr<EventDAG<T>>> sequence(std::set<std::shared_ptr<EventDAG<T>>> previous, std::vector<typename Operation<T>::fn> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
-        EventDAG<T>* sequence_root = nullptr;
-        EventDAG<T>* leaf = nullptr;
+        std::shared_ptr<EventDAG<T>> sequence_root = nullptr;
+        std::shared_ptr<EventDAG<T>> leaf = nullptr;
         for(auto op : operations) {
-            EventDAG<T>* next = new EventDAG<T>(op);
+            auto next = std::make_shared<EventDAG<T>>(op);
             if(!sequence_root) {
                 sequence_root = next;
                 leaf = next;
@@ -22,21 +23,21 @@ std::set<EventDAG<T>*> sequence(std::set<EventDAG<T>*> previous, std::vector<typ
                 leaf = next;
             } 
         }
-        std::set<EventDAG<T>*> retval;
+        std::set<std::shared_ptr<EventDAG<T>>> retval;
         retval.insert(leaf);
         return retval;
     }
 }
 
 template<typename T>
-std::set<EventDAG<T>*> alternatives(std::set<EventDAG<T>*> previous, std::vector<typename Operation<T>::fn> operations) {
+std::set<std::shared_ptr<EventDAG<T>>> alternatives(std::set<std::shared_ptr<EventDAG<T>>> previous, std::vector<typename Operation<T>::fn> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
-        std::set<EventDAG<T>*> leafs;
+        std::set<std::shared_ptr<EventDAG<T>>> leafs;
         for(auto op : operations) {
-            EventDAG<T>* branch = new EventDAG<T>(op);
+            std::shared_ptr<EventDAG<T>> branch = std::make_shared<EventDAG<T>>(op);
             leafs.insert(branch);
             for(auto prev : previous) {
                 prev->add_node(branch);

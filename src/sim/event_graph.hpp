@@ -42,13 +42,13 @@ LeafNodes<T> EventDAG<T>::collect_leaf_nodes() {
         results.insert(this->shared_from_this());
     }
     else {
-        for(auto& n : this->followers) {
-            if(n->is_leaf()) {
-                results.insert(n);
+        for(EventNode<T>& node : this->followers) {
+            if(node->is_leaf()) {
+                results.insert(node);
             }
             else {
-                LeafNodes<T> sub_results = n->collect_leaf_nodes();
-                for(auto& sub_result : sub_results) {
+                LeafNodes<T> sub_results = node->collect_leaf_nodes();
+                for(EventNode<T> sub_result : sub_results) {
                     results.insert(sub_result);
                 }
             }
@@ -76,8 +76,8 @@ OperationResults<T> EventDAG<T>::evaluate_depth(T payload) {
         results.push_back(current);
     }
     else {
-        for(auto n : this->followers) {
-            OperationResults<T> sub_results = n->evaluate_depth(current);
+        for(EventNode<T> node : this->followers) {
+            OperationResults<T> sub_results = node->evaluate_depth(current);
             results.insert(results.end(), sub_results.begin(), sub_results.end());
         }        
     }

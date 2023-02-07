@@ -9,12 +9,12 @@ LeafNodes<T> sequence(LeafNodes<T> previous, std::vector<typename Operation<T>::
     else {
         EventNode<T> sequence_root = nullptr;
         EventNode<T> leaf = nullptr;
-        for(auto op : operations) {
+        for(typename Operation<T>::fn op : operations) {
             auto next = EventDAG<T>::new_node(op);
             if(!sequence_root) {
                 sequence_root = next;
                 leaf = next;
-                for(auto prev : previous) {
+                for(EventNode<T> prev : previous) {
                    prev->add_node(sequence_root);
                 }
             }
@@ -36,10 +36,10 @@ LeafNodes<T> alternatives(LeafNodes<T> previous, std::vector<typename Operation<
     }
     else {
         LeafNodes<T> leafs;
-        for(auto op : operations) {
+        for(typename Operation<T>::fn op : operations) {
             EventNode<T> branch = EventDAG<T>::new_node(op);
             leafs.insert(branch);
-            for(auto prev : previous) {
+            for(EventNode<T> prev : previous) {
                 prev->add_node(branch);
             }
         }

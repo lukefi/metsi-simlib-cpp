@@ -1,15 +1,16 @@
 #include <memory>
 #include "event_graph.hpp"
 
-template<typename T>
-LeafNodes<T> sequence(LeafNodes<T> previous, std::vector<typename Operation<T>::fn> operations) {
+template<typename T> using GeneratorFn = std::function<LeafNodes<T>(LeafNodes<T>, std::vector<SimOperation<T>>)>;
+
+template<typename T> LeafNodes<T> sequence(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
         EventNode<T> sequence_root = nullptr;
         EventNode<T> leaf = nullptr;
-        for(typename Operation<T>::fn op : operations) {
+        for(SimOperation<T> op : operations) {
             auto next = EventDAG<T>::new_node(op);
             if(!sequence_root) {
                 sequence_root = next;
@@ -21,7 +22,7 @@ LeafNodes<T> sequence(LeafNodes<T> previous, std::vector<typename Operation<T>::
             else {
                 leaf->add_node(next);
                 leaf = next;
-            } 
+            }
         }
         LeafNodes<T> retval;
         retval.insert(leaf);
@@ -29,14 +30,14 @@ LeafNodes<T> sequence(LeafNodes<T> previous, std::vector<typename Operation<T>::
     }
 }
 
-template<typename T>
-LeafNodes<T> alternatives(LeafNodes<T> previous, std::vector<typename Operation<T>::fn> operations) {
+
+template<typename T> LeafNodes<T> alternatives(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
         LeafNodes<T> leafs;
-        for(typename Operation<T>::fn op : operations) {
+        for(SimOperation<T> op : operations) {
             EventNode<T> branch = EventDAG<T>::new_node(op);
             leafs.insert(branch);
             for(EventNode<T> prev : previous) {

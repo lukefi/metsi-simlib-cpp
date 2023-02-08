@@ -1,0 +1,12 @@
+object:
+  integer: 1
+  string: abc
+  float: 1.0
+  list: [1, 2, 3]
+  tuple: [1, 2, three]
+  nested:
+    - one
+    - two
+    - three:
+        - four
+        - five

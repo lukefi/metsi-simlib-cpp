@@ -13,7 +13,7 @@ include_directories(${LUA_INCLUDE_DIR})
 add_boost_test(event_graph.cpp)
 add_boost_test(branching_generators.cpp)
 add_boost_test_with_lib(yaml_tester.cpp yaml-cpp)
-add_boost_test_with_lib(lua_tester.cpp lua5.1)
+add_boost_test_with_lib(lua_tester.cpp luajit-5.1)
 
 add_custom_command(TARGET yaml_tester POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

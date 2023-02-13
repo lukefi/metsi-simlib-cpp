@@ -64,10 +64,16 @@ template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(T payload) 
         results.push_back(current);
     }
     else {
-        for(EventNode<T> node : this->followers) {
-            OperationResults<T> sub_results = node->evaluate_depth(current);
+        if(this->followers.size() == 1) {
+            OperationResults<T> sub_results = this->followers.front()->evaluate_depth(current);
             results.insert(results.end(), sub_results.begin(), sub_results.end());
-        }        
+        }
+        else if(this->followers.size() > 1) {
+            for (EventNode<T> node: this->followers) {
+                OperationResults<T> sub_results = node->evaluate_depth(current);
+                results.insert(results.end(), sub_results.begin(), sub_results.end());
+            }
+        }
     }
     return results;
 }

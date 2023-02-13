@@ -3,12 +3,14 @@
 #include <set>
 #include "branching_generators.hpp"
 
-int increment(int a) {
-    return a + 1;
+std::shared_ptr<int> increment(std::shared_ptr<int> a) {
+    *a += 1;
+    return a;
 }
 
-int decrement(int a) {
-    return a - 1;
+std::shared_ptr<int> decrement(std::shared_ptr<int> a) {
+    *a -= 1;
+    return a;
 }
 
 BOOST_AUTO_TEST_CASE(sequence_works) {
@@ -31,10 +33,11 @@ BOOST_AUTO_TEST_CASE(sequence_works) {
     LeafNodes<int> new_leafs = sequence<int>(leafs, operations);
     BOOST_CHECK(new_leafs.size() == 1);
 
-    OperationResults<int> results = root->evaluate_depth(0);
+    auto payload = std::make_shared<int>(0);
+    OperationResults<int> results = root->evaluate_depth(payload);
     BOOST_CHECK(results.size() == 2);
-    BOOST_CHECK(results[0] == 5);
-    BOOST_CHECK(results[1] == 5);
+    BOOST_CHECK(*results[0] == 5);
+    BOOST_CHECK(*results[1] == 5);
 }
 
 BOOST_AUTO_TEST_CASE(alternatives_works) {
@@ -50,10 +53,11 @@ BOOST_AUTO_TEST_CASE(alternatives_works) {
     LeafNodes<int> new_leafs = alternatives<int>(leafs, operations);
     BOOST_CHECK(new_leafs.size() == 2);
 
-    OperationResults<int> results = root->evaluate_depth(0);
+    auto payload = std::make_shared<int>(0);
+    OperationResults<int> results = root->evaluate_depth(payload);
     BOOST_CHECK(results.size() == 2);
-    BOOST_CHECK(results[0] == 2);
-    BOOST_CHECK(results[1] == 2);
+    BOOST_CHECK(*results[0] == 2);
+    BOOST_CHECK(*results[1] == 2);
 }
 
 BOOST_AUTO_TEST_CASE(generator_combination_works) {
@@ -76,12 +80,13 @@ BOOST_AUTO_TEST_CASE(generator_combination_works) {
     LeafNodes<int> full_tree_leafs = root->collect_leaf_nodes();
     BOOST_CHECK(full_tree_leafs.size() == 2);
 
-    OperationResults<int> results = root->evaluate_depth(0);
+    auto payload = std::make_shared<int>(0);
+    OperationResults<int> results = root->evaluate_depth(payload);
     BOOST_CHECK(results.size() == 4);
-    BOOST_CHECK(results[0] == 7);
-    BOOST_CHECK(results[1] == 7);
-    BOOST_CHECK(results[2] == 7);
-    BOOST_CHECK(results[3] == 7);
+    BOOST_CHECK(*results[0] == 7);
+    BOOST_CHECK(*results[1] == 7);
+    BOOST_CHECK(*results[2] == 7);
+    BOOST_CHECK(*results[3] == 7);
 }
 
 BOOST_AUTO_TEST_CASE(multiple_operations_work) {
@@ -97,11 +102,12 @@ BOOST_AUTO_TEST_CASE(multiple_operations_work) {
     LeafNodes<int> level_4 = alternatives<int>(level_3, operations);
     BOOST_CHECK(level_4.size() == 2); // tree would have 2*2 leafs, equivalent directed graph has 2
 
-    OperationResults<int> results = root->evaluate_depth(0);
+    auto payload = std::make_shared<int>(0);
+    OperationResults<int> results = root->evaluate_depth(payload);
     BOOST_CHECK(results.size() == 4); // 4 total unique paths from root to leafs via the 2*2 alternatives
     // sequences result in no change as increment, decrement.
-    BOOST_CHECK(results[0] == 3);  // alternatives increment, increment
-    BOOST_CHECK(results[1] == 1);  // alternatives increment, decrement
-    BOOST_CHECK(results[2] == 1);  // alternatives decrement, increment
-    BOOST_CHECK(results[3] == -1); // alternatives decrement, decrement
+    BOOST_CHECK(*results[0] == 3);  // alternatives increment, increment
+    BOOST_CHECK(*results[1] == 1);  // alternatives increment, decrement
+    BOOST_CHECK(*results[2] == 1);  // alternatives decrement, increment
+    BOOST_CHECK(*results[3] == -1); // alternatives decrement, decrement
 }

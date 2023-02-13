@@ -14,43 +14,43 @@ public:
     std::vector<int> memories() { return memory; }
 };
 
-TestExample increment(TestExample payload) {
-    payload.set(payload.get() + 1);
+std::shared_ptr<TestExample> increment(std::shared_ptr<TestExample> payload) {
+    payload->set(payload->get() + 1);
     return payload;
 };
 
-TestExample remember(TestExample payload) {
-    payload.memorize(payload.get());
+std::shared_ptr<TestExample> remember(std::shared_ptr<TestExample> payload) {
+    payload->memorize(payload->get());
     return payload;
 };
 
 BOOST_AUTO_TEST_CASE(simple_sequence_with_object) {
     OperationChain<TestExample> ops{increment, increment};
-    TestExample payload(1);
+    auto payload = std::make_shared<TestExample>(1);
     EventNode<TestExample> root = EventDAG<TestExample>::new_node(increment);
     LeafNodes<TestExample> l0 = root->collect_leaf_nodes();
     LeafNodes<TestExample> l1 = sequence<TestExample>(l0, ops);
     OperationResults<TestExample> results = root->evaluate_depth(payload);
-    BOOST_CHECK(results[0].get() == 4);
+    BOOST_CHECK(results[0]->get() == 4);
 }
 
 BOOST_AUTO_TEST_CASE(simple_alternatives_with_object) {
     OperationChain<TestExample> ops{increment, increment};
-    TestExample payload(1);
+    auto payload = std::make_shared<TestExample>(1);
     EventNode<TestExample> root = EventDAG<TestExample>::new_node(increment);
     LeafNodes<TestExample> l0 = root->collect_leaf_nodes();
     LeafNodes<TestExample> l1 = sequence<TestExample>(l0, ops);
     LeafNodes<TestExample> l2 = alternatives<TestExample>(l1, ops);
     OperationResults<TestExample> results = root->evaluate_depth(payload);
-    BOOST_CHECK(results[0].get() == 5);
-    BOOST_CHECK(results[1].get() == 5);
+    BOOST_CHECK(results[0]->get() == 5);
+    BOOST_CHECK(results[1]->get() == 5);
 
 }
 
 BOOST_AUTO_TEST_CASE(copy_immutability_between_branches) {
     OperationChain<TestExample> ops{increment, increment};
     OperationChain<TestExample> checkpoint{remember};
-    TestExample payload(1);
+    auto payload = std::make_shared<TestExample>(1);
     EventNode<TestExample> root = EventDAG<TestExample>::new_node(increment);
     LeafNodes<TestExample> l0 = root->collect_leaf_nodes();
     LeafNodes<TestExample> l1 = sequence<TestExample>(l0, ops);
@@ -65,9 +65,9 @@ BOOST_AUTO_TEST_CASE(copy_immutability_between_branches) {
 
     BOOST_CHECK(results.size() == 4);
     for(int i=0; i<4; i++) {
-        BOOST_CHECK(results[i].memories().size() == 3);
-        BOOST_CHECK(results[i].memories()[0] == 4);
-        BOOST_CHECK(results[i].memories()[1] == 7);
-        BOOST_CHECK(results[i].memories()[2] == 10);
+        BOOST_CHECK(results[i]->memories().size() == 3);
+        BOOST_CHECK(results[i]->memories()[0] == 4);
+        BOOST_CHECK(results[i]->memories()[1] == 7);
+        BOOST_CHECK(results[i]->memories()[2] == 10);
     }
 }

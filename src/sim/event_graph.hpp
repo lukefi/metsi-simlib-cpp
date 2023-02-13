@@ -7,8 +7,8 @@ template<typename T> class EventDAG;
 template<typename T> using EventNode = std::shared_ptr<EventDAG<T>>;
 template<typename T> using EventNodes = std::vector<EventNode<T>>;
 template<typename T> using LeafNodes = std::set<EventNode<T>>;
-template<typename T> using OperationResults = std::vector<T>;
-template<typename T> using SimOperation = std::function<T(T)>;
+template<typename T> using OperationResults = std::vector<std::shared_ptr<T>>;
+template<typename T> using SimOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
 template<typename T> using OperationChain = std::vector<SimOperation<T>>;
 
 template<typename T> class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
@@ -21,8 +21,8 @@ template<typename T> class EventDAG : public std::enable_shared_from_this<EventD
     explicit EventDAG(SimOperation<T>);
     void add_node(EventNode<T>);
     LeafNodes<T> collect_leaf_nodes();
-    OperationResults<T> evaluate_depth(T);
-    static EventNode<T> new_node(std::function<T(T)>);
+    OperationResults<T> evaluate_depth(std::shared_ptr<T>);
+    static EventNode<T> new_node(SimOperation<T>);
 };
 
 template<typename T> EventDAG<T>::EventDAG(SimOperation<T> op): operation(op) {}
@@ -57,9 +57,9 @@ template<typename T> void EventDAG<T>::add_node(EventNode<T> next) {
     this->followers.push_back(next);
 }
 
-template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(T payload) {
+template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(std::shared_ptr<T> payload) {
     OperationResults<T> results;
-    T current = this->operation(payload);
+    auto current = this->operation(payload);
     if(this->is_leaf()) {
         results.push_back(current);
     }
@@ -70,7 +70,7 @@ template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(T payload) 
         }
         else if(this->followers.size() > 1) {
             for (EventNode<T> node: this->followers) {
-                OperationResults<T> sub_results = node->evaluate_depth(current);
+                OperationResults<T> sub_results = node->evaluate_depth(std::make_shared<T>(*current));
                 results.insert(results.end(), sub_results.begin(), sub_results.end());
             }
         }

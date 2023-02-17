@@ -14,7 +14,7 @@ add_boost_test(event_graph.cpp)
 add_boost_test(branching_generators.cpp)
 add_boost_test_with_lib(yaml_tester.cpp yaml-cpp)
 add_boost_test_with_lib(lua_tester.cpp luajit-5.1)
-add_boost_test(operation_util.cpp)
+add_boost_test_with_lib(operation_util.cpp sim)
 add_boost_test(class_type_operation_test.cpp)
 
 add_custom_command(TARGET yaml_tester POST_BUILD

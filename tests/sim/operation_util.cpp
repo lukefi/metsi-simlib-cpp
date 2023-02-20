@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(operation_single_alias) {
      *         - alias_operation
      * */
     Parameters alias_override{{"value", "1"}};
-    OperationsToParameters alias{{"base_operation", alias_override}};
+    OperationWithParameters alias{"base_operation", alias_override};
     OperationAliasMap aliases{{"alias_operation", alias}};
 
     auto expected_result = std::make_pair(std::string{"base_operation"}, alias_override);
@@ -82,9 +82,9 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias) {
     Parameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
     Parameters alias1_override{{"value", "2"}, {"other", "1"}};
     Parameters top_override{{"value", "7"}};
-    OperationsToParameters alias2{{"base_operation", alias2_override}};
-    OperationsToParameters alias1{{"alias2_operation", alias1_override}};
-    OperationsToParameters top{{"alias1_operation", top_override}};
+    OperationWithParameters alias2{"base_operation", alias2_override};
+    OperationWithParameters alias1{"alias2_operation", alias1_override};
+    OperationWithParameters top{"alias1_operation", top_override};
     OperationAliasMap aliases{
         {"top_operation", top},
         {"alias1_operation", alias1},
@@ -124,9 +124,9 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters) {
     Parameters alias1_override{{"value", "2"}, {"other", "1"}};
     Parameters top_override{{"value", "7"}};
     Parameters top_inline{{"value", "50"}};
-    OperationsToParameters alias2{{"base_operation", alias2_override}};
-    OperationsToParameters alias1{{"alias2_operation", alias1_override}};
-    OperationsToParameters top{{"alias1_operation", top_override}};
+    OperationWithParameters alias2{"base_operation", alias2_override};
+    OperationWithParameters alias1{"alias2_operation", alias1_override};
+    OperationWithParameters top{"alias1_operation", top_override};
     OperationAliasMap aliases{
             {"top_operation", top},
             {"alias1_operation", alias1},
@@ -178,9 +178,9 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters_and_default_
     Parameters alias1_override{{"value", "2"}, {"other", "1"}};
     Parameters top_override{{"value", "7"}};
     Parameters top_inline{{"value", "50"}};
-    OperationsToParameters alias2{{"base_operation", alias2_override}};
-    OperationsToParameters alias1{{"alias2_operation", alias1_override}};
-    OperationsToParameters top{{"alias1_operation", top_override}};
+    OperationWithParameters alias2{"base_operation", alias2_override};
+    OperationWithParameters alias1{"alias2_operation", alias1_override};
+    OperationWithParameters top{"alias1_operation", top_override};
     OperationAliasMap aliases{
             {"top_operation", top},
             {"alias1_operation", alias1},

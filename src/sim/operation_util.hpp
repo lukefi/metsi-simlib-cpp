@@ -4,11 +4,6 @@
 #include "event_graph.hpp"
 #include "core_types.hpp"
 
-using Parameters = std::map<std::string, std::string>;
-using OperationsToParameters = std::map<std::string, Parameters>;
-using OperationAliasMap = std::map<std::string, OperationsToParameters>;
-template<typename CU> using ParameteredOperation = std::function<std::shared_ptr<CU>(std::shared_ptr<CU>, Parameters)>;
-
 /**
  * Prepare the given CU,map=>CU parametrizable function as a CU=>CU closure capturing the parameter map.
  *

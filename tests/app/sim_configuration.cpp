@@ -28,12 +28,12 @@ BOOST_AUTO_TEST_CASE(aliased_operations_parsing) {
     auto alias3 = operation_aliases["alias3"];
     auto alias4 = operation_aliases["alias4"];
     Parameters aliased_param1{{"param1", "3"}};
-    OperationsToParameters expected1{{"operation", aliased_param1}};
+    OperationWithParameters expected1{"operation", aliased_param1};
     Parameters aliased_param2{{"param2", "4"}};
-    OperationsToParameters expected2{{"operation", aliased_param2}};
+    OperationWithParameters expected2{"operation", aliased_param2};
     Parameters aliased_param3{{"param1", "10"}};
-    OperationsToParameters expected3{{"alias2", aliased_param3}};
-    OperationsToParameters expected4{{"alias2", {}}};
+    OperationWithParameters expected3{"alias2", aliased_param3};
+    OperationWithParameters expected4{"alias2", {}};
     BOOST_CHECK(alias1 == expected1);
     BOOST_CHECK(alias2 == expected2);
     BOOST_CHECK(alias3 == expected3);

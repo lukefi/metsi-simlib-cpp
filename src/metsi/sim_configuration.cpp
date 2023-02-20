@@ -48,15 +48,15 @@ OperationAliasMap parse_operation_aliases(const YAML::Node& params) {
                 auto alias_name = alias_mapping.first.as<std::string>();
                 if(alias_mapping.second.Type() == NodeType::Map) {
                     auto aliased_node = *alias_mapping.second.begin();
-                    OperationsToParameters target;
                     if(aliased_node.second.Type() == NodeType::Map) {
-                        target.insert(parse_parameter_set(aliased_node));
-                        result.insert({alias_name, target});
+                        result.insert({alias_name, parse_parameter_set(aliased_node)});
+                    }
+                    else {
+                        result.insert({alias_name, {alias_mapping.second.as<std::string>(), {}}});
                     }
                 }
                 else if(alias_mapping.second.Type() == NodeType::Scalar) {
-                    OperationsToParameters target{{alias_mapping.second.as<std::string>(), {}}};
-                    result.insert({alias_name, target});
+                    result.insert({alias_name, {alias_mapping.second.as<std::string>(), {}}});
                 }
             }
             break;

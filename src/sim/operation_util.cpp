@@ -21,10 +21,9 @@ resolve_operation_parameters(const std::string &operation, OperationsToParameter
         merged.merge(default_parameters[operation]);
         return {std::make_pair(operation, merged)};
     }
-    OperationsToParameters target = aliases[operation];
-    auto alias = *target.begin();
+    OperationWithParameters target = aliases[operation];
     Parameters merged;
     merged.merge(override);
-    merged.merge(alias.second);
-    return resolve_operation_parameters(alias.first, default_parameters, aliases, merged);
+    merged.merge(target.second);
+    return resolve_operation_parameters(target.first, default_parameters, aliases, merged);
 }

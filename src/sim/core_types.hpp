@@ -25,8 +25,9 @@ template<typename OP> using GeneratorFn = std::function<LeafNodes<OP>(LeafNodes<
 
 /// Utility types
 using Parameters = std::map<std::string, std::string>;
+using OperationWithParameters = std::pair<std::string, Parameters>;
 using OperationsToParameters = std::map<std::string, Parameters>;
-using OperationAliasMap = std::map<std::string, OperationsToParameters>;
+using OperationAliasMap = std::map<std::string, OperationWithParameters>;
 template<typename CU> using ParameteredOperation = std::function<std::shared_ptr<CU>(std::shared_ptr<CU>, Parameters)>;
 
 #endif

@@ -3,54 +3,54 @@
 #include <set>
 #include <memory>
 
-template<typename T> class EventDAG;
-template<typename T> using EventNode = std::shared_ptr<EventDAG<T>>;
-template<typename T> using EventNodes = std::vector<EventNode<T>>;
-template<typename T> using LeafNodes = std::set<EventNode<T>>;
-template<typename T> using OperationResults = std::vector<std::shared_ptr<T>>;
-template<typename T> using SimOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
-template<typename T> using OperationChain = std::vector<SimOperation<T>>;
+template<typename OP> class EventDAG;
+template<typename OP> using EventNode = std::shared_ptr<EventDAG<OP>>;
+template<typename OP> using EventNodes = std::vector<EventNode<OP>>;
+template<typename OP> using LeafNodes = std::set<EventNode<OP>>;
+template<typename OP> using OperationResults = std::vector<std::shared_ptr<OP>>;
+template<typename OP> using SimOperation = std::function<std::shared_ptr<OP>(std::shared_ptr<OP>)>;
+template<typename OP> using OperationChain = std::vector<SimOperation<OP>>;
 
 /**
- * A node in the directed graph of simulation events. Holds a simulation event function (T=>T continuation). Holds a
+ * A node in the directed graph of simulation events. Holds a simulation event function (OP=>OP continuation). Holds a
  * list of follow-up nodes. This structure describes a full, computable simulation.
- * @tparam T a type representing the simulation state
+ * @tparam OP a type representing the simulation state
  */
-template<typename T> class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
+template<typename OP> class EventDAG : public std::enable_shared_from_this<EventDAG<OP>> {
     private:
-    SimOperation<T> operation;
-    EventNodes<T> followers;
+    SimOperation<OP> operation;
+    EventNodes<OP> followers;
     bool is_leaf();
 
     public:
     /**
-     * Constructor creating a bare event node graph with a T=>T simulation event function. Use the class static function
-     * EventDAG::new_node(SimOperation<T>) to obtain a shared EventNode represenation for this object.
+     * Constructor creating a bare event node graph with a OP=>OP simulation event function. Use the class static function
+     * EventDAG::new_node(SimOperation<OP>) to obtain a shared EventNode represenation for this object.
      */
-    explicit EventDAG(SimOperation<T>);
+    explicit EventDAG(SimOperation<OP>);
 
     /**
      * Attach an existing graph node as a follower of this node
      */
-    void add_node(EventNode<T>);
+    void add_node(EventNode<OP>);
 
     /**
      * Depth-first search for the leaf nodes of this graph.
      * @return a set of leaf nodes for this directed graph
      */
-    LeafNodes<T> collect_leaf_nodes();
+    LeafNodes<OP> collect_leaf_nodes();
 
     /**
      * Depth-first evaluation of the simulation represented by this graph.
-     * @return a vector of simulation states T as given after leaf node continuation
+     * @return a vector of simulation states OP as given after leaf node continuation
      */
-    OperationResults<T> evaluate_depth(std::shared_ptr<T>);
+    OperationResults<OP> evaluate_depth(std::shared_ptr<OP>);
 
     /**
      * A static factory for new nodes of an EventDAG graph
-     * @return a graph node constructred with given T=>T continuation function
+     * @return a graph node constructred with given OP=>OP continuation function
      */
-    static EventNode<T> new_node(SimOperation<T>);
+    static EventNode<OP> new_node(SimOperation<OP>);
 };
 
 template<typename T> EventDAG<T>::EventDAG(SimOperation<T> op): operation(op) {}

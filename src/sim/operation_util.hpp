@@ -6,18 +6,18 @@
 using Parameters = std::map<std::string, std::string>;
 using OperationsToParameters = std::map<std::string, Parameters>;
 using OperationAliasMap = std::map<std::string, OperationsToParameters>;
-template<typename T> using ParameteredOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>, Parameters)>;
+template<typename CU> using ParameteredOperation = std::function<std::shared_ptr<CU>(std::shared_ptr<CU>, Parameters)>;
 
 /**
- * Prepare the given T,map=>T parametrizable function as a T=>T closure capturing the parameter map.
+ * Prepare the given CU,map=>CU parametrizable function as a CU=>CU closure capturing the parameter map.
  *
- * @tparam T a type representing the simulation state
- * @param op a T,map=>T function
+ * @tparam CU a type representing the simulation state
+ * @param op a CU,map=>CU function
  * @param params a map representing domain parameters for op
- * @return a T=>T closure capturing the map of domain parameters for op
+ * @return a CU=>CU closure capturing the map of domain parameters for op
  */
-template<typename T> SimOperation<T> parameter_bound_operation(ParameteredOperation<T> op, Parameters params) {
-    return [&op, &params](std::shared_ptr<T> payload) { return op(payload, params); };
+template<typename CU> SimOperation<CU> parameter_bound_operation(ParameteredOperation<CU> op, Parameters params) {
+    return [&op, &params](std::shared_ptr<CU> payload) { return op(payload, params); };
 }
 
 std::pair<std::string, Parameters>

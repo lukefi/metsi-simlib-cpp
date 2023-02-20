@@ -1,0 +1,18 @@
+operation_params:
+  operation1:
+    param1: 1
+    param2: 2
+  operation2:
+    - bogus
+    - stuff
+
+operation_aliases:
+  alias:
+    operation:
+      param1: 3
+  alias2:
+    operation:
+      param2: 4
+  alias3:
+    alias2:
+      param1: 10

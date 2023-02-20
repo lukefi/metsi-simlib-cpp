@@ -111,3 +111,25 @@ BOOST_AUTO_TEST_CASE(multiple_operations_work) {
     BOOST_CHECK(*results[2] == 1);  // alternatives decrement, increment
     BOOST_CHECK(*results[3] == -1); // alternatives decrement, decrement
 }
+
+BOOST_AUTO_TEST_CASE(generator_resolution) {
+    OperationChain<int> operations;
+    operations.emplace_back(increment);
+    operations.emplace_back(increment);
+
+    EventNode<int> root = EventDAG<int>::new_node(increment);
+    LeafNodes<int> level_0 = root->collect_leaf_nodes();
+    BOOST_CHECK(level_0.size() == 1);
+    LeafNodes<int> level_1 = generator_by_name<int>("sequence").value()(level_0, operations);
+    BOOST_CHECK(level_1.size() == 1);
+    LeafNodes<int> level_2 = generator_by_name<int>("alternatives").value()(level_1, operations);
+    BOOST_CHECK(level_2.size() == 2);
+    auto payload = std::make_shared<int>(0);
+    OperationResults<int> results = root->evaluate_depth(payload);
+    BOOST_CHECK(results.size() == 2);
+    BOOST_CHECK(*results[0] == 4);
+    BOOST_CHECK(*results[1] == 4);
+
+    auto none = generator_by_name<int>("unknown");
+    BOOST_CHECK(none.has_value() == false);
+}

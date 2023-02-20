@@ -30,7 +30,6 @@ template<typename T> LeafNodes<T> sequence(LeafNodes<T> previous, OperationChain
     }
 }
 
-
 template<typename T> LeafNodes<T> alternatives(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
@@ -46,4 +45,14 @@ template<typename T> LeafNodes<T> alternatives(LeafNodes<T> previous, OperationC
         }
         return leafs;
     }
+}
+
+template<typename T> std::optional<GeneratorFn<T>> generator_by_name(const std::string& name) {
+    if(name == "sequence") {
+        return {sequence<T>};
+    }
+    else if(name == "alternatives") {
+        return {alternatives<T>};
+    }
+    return {};
 }

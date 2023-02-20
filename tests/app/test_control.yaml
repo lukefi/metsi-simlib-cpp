@@ -16,3 +16,5 @@ operation_aliases:
   alias3:
     alias2:
       param1: 10
+  alias4:
+    alias2

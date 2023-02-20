@@ -1,15 +1,11 @@
+#ifndef EVENT_GRAPH_HPP
+#define EVENT_GRAPH_HPP
+
 #include <functional>
 #include <vector>
 #include <set>
 #include <memory>
-
-template<typename OP> class EventDAG;
-template<typename OP> using EventNode = std::shared_ptr<EventDAG<OP>>;
-template<typename OP> using EventNodes = std::vector<EventNode<OP>>;
-template<typename OP> using LeafNodes = std::set<EventNode<OP>>;
-template<typename OP> using OperationResults = std::vector<std::shared_ptr<OP>>;
-template<typename OP> using SimOperation = std::function<std::shared_ptr<OP>(std::shared_ptr<OP>)>;
-template<typename OP> using OperationChain = std::vector<SimOperation<OP>>;
+#include "core_types.hpp"
 
 /**
  * A node in the directed graph of simulation events. Holds a simulation event function (OP=>OP continuation). Holds a
@@ -109,3 +105,5 @@ template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(std::shared
 template<typename T> EventNode<T> EventDAG<T>::new_node(SimOperation<T> op) {
     return std::make_shared<EventDAG<T>>(op);
 }
+
+#endif

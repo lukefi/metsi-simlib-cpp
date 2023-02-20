@@ -1,8 +1,6 @@
 #include <memory>
 #include "event_graph.hpp"
-
-template<typename OP> using GeneratorFn = std::function<LeafNodes<OP>(LeafNodes<OP>, std::vector<SimOperation<OP>>)>;
-
+#include "core_types.hpp"
 /**
  * Extend given simulator event graph leaf nodes with new event nodes. Given operation functions represent the events.
  * The functions are OP=>OP continuation functions. They are attached to the leaf nodes as a single linear sequence of

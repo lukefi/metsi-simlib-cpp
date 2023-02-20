@@ -2,6 +2,7 @@
 #include <string>
 #include <optional>
 #include "event_graph.hpp"
+#include "core_types.hpp"
 
 using Parameters = std::map<std::string, std::string>;
 using OperationsToParameters = std::map<std::string, Parameters>;

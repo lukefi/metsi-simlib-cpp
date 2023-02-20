@@ -93,3 +93,11 @@ BOOST_AUTO_TEST_CASE(yaml_mixed_type_list_nested_object) {
     BOOST_CHECK(content_strings[0] == "four");
     BOOST_CHECK(content_strings[1] == "five");
 }
+
+BOOST_AUTO_TEST_CASE(direct_map_transformation) {
+    YAML::Node test = YAML::LoadFile("test.yaml");
+    auto result = test["just_map"].as<std::map<std::string, std::string>>();
+    BOOST_CHECK(result.size() == 2);
+    BOOST_CHECK(result["abc"] == "1");
+    BOOST_CHECK(result["def"] == "2");
+}

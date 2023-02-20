@@ -10,3 +10,7 @@ object:
     - three:
         - four
         - five
+
+just_map:
+  abc: 1
+  def: 2

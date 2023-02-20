@@ -3,6 +3,16 @@
 
 template<typename T> using GeneratorFn = std::function<LeafNodes<T>(LeafNodes<T>, std::vector<SimOperation<T>>)>;
 
+/**
+ * Extend given simulator event graph leaf nodes with new event nodes. Given operation functions represent the events.
+ * The functions are T=>T continuation functions. They are attached to the leaf nodes as a single linear sequence of
+ * follower nodes, extending the depth of the graph by the length of the sequence.
+ *
+ * @tparam T a type representing the simulation state
+ * @param previous a collection of simulation event graph leaf nodes
+ * @param operations a collection of T => T functions representing simulation events
+ * @return a collection of event graph leaf nodes as expanded by this generator function
+ */
 template<typename T> LeafNodes<T> sequence(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
@@ -30,6 +40,16 @@ template<typename T> LeafNodes<T> sequence(LeafNodes<T> previous, OperationChain
     }
 }
 
+/**
+ * Extend given simulator event graph leaf nodes with new event nodes. Given operation functions represent the events.
+ * The functions are T=>T continuation functions. They are attached to the leaf nodes as a new branches representing
+ * alternative simulation paths, extending the depth of the graph by 1.
+ *
+ * @tparam T a type representing the simulation state
+ * @param previous a collection of simulation event graph leaf nodes
+ * @param operations a collection of T => T functions representing simulation events
+ * @return a collection of event graph leaf nodes as expanded by this generator function
+ */
 template<typename T> LeafNodes<T> alternatives(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;

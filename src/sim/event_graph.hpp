@@ -11,6 +11,11 @@ template<typename T> using OperationResults = std::vector<std::shared_ptr<T>>;
 template<typename T> using SimOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
 template<typename T> using OperationChain = std::vector<SimOperation<T>>;
 
+/**
+ * A node in the directed graph of simulation events. Holds a simulation event function (T=>T continuation). Holds a
+ * list of follow-up nodes. This structure describes a full, computable simulation.
+ * @tparam T a type representing the simulation state
+ */
 template<typename T> class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
     private:
     SimOperation<T> operation;
@@ -18,10 +23,33 @@ template<typename T> class EventDAG : public std::enable_shared_from_this<EventD
     bool is_leaf();
 
     public:
+    /**
+     * Constructor creating a bare event node graph with a T=>T simulation event function. Use the class static function
+     * EventDAG::new_node(SimOperation<T>) to obtain a shared EventNode represenation for this object.
+     */
     explicit EventDAG(SimOperation<T>);
+
+    /**
+     * Attach an existing graph node as a follower of this node
+     */
     void add_node(EventNode<T>);
+
+    /**
+     * Depth-first search for the leaf nodes of this graph.
+     * @return a set of leaf nodes for this directed graph
+     */
     LeafNodes<T> collect_leaf_nodes();
+
+    /**
+     * Depth-first evaluation of the simulation represented by this graph.
+     * @return a vector of simulation states T as given after leaf node continuation
+     */
     OperationResults<T> evaluate_depth(std::shared_ptr<T>);
+
+    /**
+     * A static factory for new nodes of an EventDAG graph
+     * @return a graph node constructred with given T=>T continuation function
+     */
     static EventNode<T> new_node(SimOperation<T>);
 };
 

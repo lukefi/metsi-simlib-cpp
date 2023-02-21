@@ -13,35 +13,35 @@ include_directories(${METSI_HEADERS_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 set(METSI_LIBS metsi-lib yaml-cpp)
 
-add_boost_test(sim/event_graph.cpp)
-add_boost_test(sim/branching_generators.cpp)
-add_boost_test_with_lib(app/yaml_tester.cpp yaml-cpp)
-add_boost_test_with_lib(app/lua_tester.cpp luajit-5.1)
+add_boost_test(sim/event_graph_test.cpp)
+add_boost_test(sim/branching_generators_test.cpp)
+add_boost_test_with_lib(app/yaml_cpp_test.cpp yaml-cpp)
+add_boost_test_with_lib(app/lua_test.cpp luajit-5.1)
 add_boost_test_with_lib(sim/framework_util_test.cpp sim)
 add_boost_test(sim/class_type_operation_test.cpp)
-add_boost_test_with_lib(app/sim_configuration.cpp ${METSI_LIBS})
-add_boost_test_with_lib(app/file_io.cpp ${METSI_LIBS})
+add_boost_test_with_lib(app/sim_configuration_test.cpp ${METSI_LIBS})
+add_boost_test_with_lib(app/file_io_test.cpp ${METSI_LIBS})
 
-add_custom_command(TARGET yaml_tester POST_BUILD
+add_custom_command(TARGET yaml_cpp_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/app/test.yaml
-        $<TARGET_FILE_DIR:yaml_tester>
+        $<TARGET_FILE_DIR:yaml_cpp_test>
         )
 
-add_custom_command(TARGET lua_tester POST_BUILD
+add_custom_command(TARGET lua_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/app/test.lua
-        $<TARGET_FILE_DIR:lua_tester>
+        $<TARGET_FILE_DIR:lua_test>
         )
 
-add_custom_command(TARGET file_io POST_BUILD
+add_custom_command(TARGET file_io_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/app/test.lua
-        $<TARGET_FILE_DIR:file_io>
+        $<TARGET_FILE_DIR:file_io_test>
         )
 
-add_custom_command(TARGET sim_configuration POST_BUILD
+add_custom_command(TARGET sim_configuration_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/app/test_control.yaml
-        $<TARGET_FILE_DIR:sim_configuration>
+        $<TARGET_FILE_DIR:sim_configuration_test>
         )

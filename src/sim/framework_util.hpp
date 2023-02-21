@@ -12,8 +12,8 @@
  * @param params a map representing domain parameters for op
  * @return a CU=>CU closure capturing the map of domain parameters for op
  */
-template<typename CU> SimOperation<CU> parameter_bound_operation(ParameteredOperation<CU> op, Parameters params) {
-    return [&op, &params](std::shared_ptr<CU> payload) { return op(payload, params); };
+template<typename CU> SimOperation<CU> parameter_bound_operation(const ParameteredOperation<CU>& op, const Parameters& params) {
+    return [op, params](std::shared_ptr<CU> payload) { return op(payload, params); };
 }
 
 std::pair<std::string, Parameters>

@@ -1,4 +1,5 @@
 #include <memory>
+#include <optional>
 #include "event_graph.hpp"
 #include "core_types.hpp"
 /**

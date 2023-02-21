@@ -193,3 +193,26 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters_and_default_
     auto result = resolve_operation_parameters("top_operation", default_parameters, aliases, top_inline);
     BOOST_CHECK(result == expected_result);
 }
+
+BOOST_AUTO_TEST_CASE(leaf_generator_prototype) {
+    NestableGeneratorPrototype gen{"sequence"};
+    Parameters params{{"param1", "1"}};
+    std::vector<OperationWithParameters> ops{{"op1", params}, {"op2", params}};
+    gen.add_operations(ops);
+    BOOST_CHECK(gen.get_operations().size() == 2);
+    BOOST_CHECK(gen.get_nested().empty() == true);
+    BOOST_CHECK(gen.is_leaf() == true);
+}
+
+BOOST_AUTO_TEST_CASE(nested_generator_prototype_with_existing_operations) {
+    NestableGeneratorPrototype gen{"sequence"};
+    NestableGeneratorPrototype gen2{"alternatives"};
+    Parameters params{{"param1", "1"}};
+    std::vector<OperationWithParameters> ops{{"op1", params}, {"op2", params}};
+    gen.add_operations(ops);
+    gen2.add_operations(ops);
+    gen.add_nested_generator(gen2);
+    BOOST_CHECK(gen.get_operations().empty() == true);
+    BOOST_CHECK(gen.get_nested().size() == 2);
+    BOOST_CHECK(gen.is_leaf() == false);
+}

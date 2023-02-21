@@ -18,3 +18,28 @@ template<typename CU> SimOperation<CU> parameter_bound_operation(const Parameter
 
 std::pair<std::string, Parameters>
 resolve_operation_parameters(const std::string &, OperationsToParameters, OperationAliasMap, Parameters);
+
+/**
+ * A nested class to portray operations with parameters for generators, structured as nested constructs for simulation
+ * events. Contains the bare essentials for generating an EventDAG graph using a source for generator functions and
+ * operation functions. An instance of this class is either
+ *
+ * 1) a leaf node with operations and no nested nodes, serving as instructions for running a generator function.
+ * 2) an intermediate node with nested generators and no operations, serving as a wrapper for eventual leaf nodes.
+ *
+ * Usage of the functions add_operations and add_nested_generators ensure the internal division between those two cases.
+ */
+class NestableGeneratorPrototype {
+    mutable std::vector<OperationWithParameters> operation_candidates;
+    std::string generator_type;
+    mutable std::vector<NestableGeneratorPrototype> nested;
+
+public:
+    explicit NestableGeneratorPrototype(std::string);
+    void add_operations(const std::vector<OperationWithParameters>&);
+    void add_nested_generator(const NestableGeneratorPrototype&);
+    bool is_leaf() { return this->nested.empty(); };
+    const std::vector<NestableGeneratorPrototype>& get_nested() { return this->nested; };
+    const std::vector<OperationWithParameters>& get_operations() { return this->operation_candidates; };
+};
+

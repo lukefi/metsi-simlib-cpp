@@ -27,3 +27,39 @@ resolve_operation_parameters(const std::string &operation, OperationsToParameter
     merged.merge(target.second);
     return resolve_operation_parameters(target.first, default_parameters, aliases, merged);
 }
+
+NestableGeneratorPrototype::NestableGeneratorPrototype(std::string t): generator_type(std::move(t)) {}
+
+/**
+ * Add an operation prototype with parameters. If this generator prototype already contains nested generators, wraps
+ * the operation into a new nested generator of current instance's generator type and nests it. Otherwise adds the
+ * operation into current instance's operation prototype list.
+ *
+ * @param op an operation candidate with its parameters
+ */
+void NestableGeneratorPrototype::add_operations(const std::vector<OperationWithParameters>& ops) {
+    if(!this->nested.empty()) {
+        NestableGeneratorPrototype wrapper{this->generator_type};
+        wrapper.add_operations(ops);
+        this->nested.emplace_back(wrapper);
+    }
+    else {
+        this->operation_candidates.insert(this->operation_candidates.end(), ops.begin(), ops.end());
+    }
+}
+
+/**
+ * Add a nested generator prototype. If this generator prototype contains free operation prototypes, wrap them into a
+ * new nested generator of current instance's generator type and nests it first.
+ *
+ * @param op an operation candidate with its parameters
+ */
+void NestableGeneratorPrototype::add_nested_generator(const NestableGeneratorPrototype& gen) {
+    if(!this->operation_candidates.empty()) {
+        NestableGeneratorPrototype wrapper{this->generator_type};
+        wrapper.add_operations(this->operation_candidates);
+        this->nested.emplace_back(wrapper);
+        this->operation_candidates.clear();
+    }
+    this->nested.emplace_back(gen);
+}

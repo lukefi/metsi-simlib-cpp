@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE operation_util
 #include <boost/test/unit_test.hpp>
-#include <operation_util.hpp>
+#include <framework_util.hpp>
 
 std::shared_ptr<int> increment_param(std::shared_ptr<int> val, std::map<std::string, std::string> params) {
     int amount = std::stoi(params["amount"]);

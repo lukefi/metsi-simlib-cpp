@@ -42,6 +42,6 @@ add_custom_command(TARGET file_io_test POST_BUILD
 
 add_custom_command(TARGET sim_configuration_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/test_control.yaml
+        ${CMAKE_CURRENT_SOURCE_DIR}/app/operation_aliasing.yaml
         $<TARGET_FILE_DIR:sim_configuration_test>
         )

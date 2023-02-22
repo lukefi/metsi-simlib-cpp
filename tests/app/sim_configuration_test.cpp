@@ -4,7 +4,7 @@
 #include <file_io.hpp>
 
 BOOST_AUTO_TEST_CASE(default_parameters_parsing) {
-    YAML::Node content = read_yaml("test_control.yaml");
+    YAML::Node content = read_yaml("operation_aliasing.yaml");
     YAML::Node params_node = content["operation_params"];
     OperationsToParameters default_params = parse_default_parameters(params_node);
     BOOST_CHECK(default_params.contains("operation1") == true);
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(default_parameters_parsing) {
 }
 
 BOOST_AUTO_TEST_CASE(aliased_operations_parsing) {
-    YAML::Node content = read_yaml("test_control.yaml");
+    YAML::Node content = read_yaml("operation_aliasing.yaml");
     YAML::Node aliases_node = content["operation_aliases"];
     OperationAliasMap operation_aliases = parse_operation_aliases(aliases_node);
     BOOST_CHECK(operation_aliases.size() == 4);

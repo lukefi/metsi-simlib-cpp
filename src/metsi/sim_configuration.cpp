@@ -81,3 +81,25 @@ std::set<int> parse_time_points_from_events_structure(const YAML::Node& events_s
     }
     return unique_time_points;
 }
+
+/**
+ * Walk through the simulation_events YAML structure to discover all individual generator declaration blocks for the
+ * simulation appearing in the given time point.
+ * @param time_point a simulation time point
+ * @param events_structure YAML Node of YAML::NodeType::Map containing the simulation events structure
+ * @return std::vector<YAML::Node> of generator blocks
+ */
+std::vector<YAML::Node> find_generator_blocks_for_time(int time_point, const YAML::Node& events_structure) {
+    std::vector<YAML::Node> generators;
+    for(auto event_block : events_structure) {
+        auto time_points = event_block["time_points"].as<std::vector<int>>();
+
+        if(sequence_as_set<int>(event_block["time_points"]).contains(time_point)) {
+            auto generator_block = event_block["generators"];
+            for(auto generator : generator_block) {
+                generators.emplace_back(generator);
+            }
+        }
+    }
+    return generators;
+}

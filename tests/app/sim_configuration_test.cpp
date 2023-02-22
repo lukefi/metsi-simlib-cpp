@@ -54,3 +54,19 @@ BOOST_AUTO_TEST_CASE(time_points_parsing) {
     std::set<int> expected{0,5,10};
     BOOST_CHECK(results == expected);
 }
+
+BOOST_AUTO_TEST_CASE(generators_parsing_by_time) {
+    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    auto events = content["simulation_events"];
+    auto time0_generators = find_generator_blocks_for_time(0, events);
+    auto time5_generators = find_generator_blocks_for_time(5, events);
+    auto time10_generators = find_generator_blocks_for_time(10, events);
+    BOOST_CHECK(time0_generators.size() == 2);
+    BOOST_CHECK(time5_generators.size() == 2);
+    BOOST_CHECK(time10_generators.size() == 2);
+    BOOST_CHECK(time0_generators[1] == time5_generators[0]);
+    BOOST_CHECK(time5_generators[0] == time10_generators[0]);
+    BOOST_CHECK(time0_generators[0] != time0_generators[1]);
+    BOOST_CHECK(time5_generators[0] != time5_generators[1]);
+    BOOST_CHECK(time10_generators[0] != time10_generators[1]);
+}

@@ -45,3 +45,9 @@ add_custom_command(TARGET sim_configuration_test POST_BUILD
         ${CMAKE_CURRENT_SOURCE_DIR}/app/operation_aliasing.yaml
         $<TARGET_FILE_DIR:sim_configuration_test>
         )
+
+add_custom_command(TARGET sim_configuration_test POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/app/simulation_events_non_nested.yaml
+        $<TARGET_FILE_DIR:sim_configuration_test>
+        )

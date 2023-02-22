@@ -1,3 +1,6 @@
+#include <set>
+#include <vector>
+#include <algorithm>
 #include "sim_configuration.hpp"
 
 
@@ -64,4 +67,17 @@ OperationAliasMap parse_operation_aliases(const YAML::Node& params) {
             break;
     }
     return result;
+}
+
+/**
+ * Walk through the simulation_events YAML structure to discover all unique time points for the simulation.
+ * @param events_structure YAML Node of YAML::NodeType::Map containing the simulation events structure
+ * @return std::set<int> of unique time points
+ */
+std::set<int> parse_time_points_from_events_structure(const YAML::Node& events_structure) {
+    std::set<int> unique_time_points;
+    for(auto& event_block : events_structure) {
+        unique_time_points.merge(sequence_as_set<int>(event_block["time_points"]));
+    }
+    return unique_time_points;
 }

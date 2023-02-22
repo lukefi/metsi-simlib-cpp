@@ -1,0 +1,18 @@
+simulation_events:
+  - time_points: [0]
+    generators:
+      - sequence:
+        - alpha
+  - time_points: [0, 5, 10]
+    generators:
+      - sequence:
+        - coasting_along
+  - time_points: [5]
+    generators:
+      - alternatives:
+        - choke_point
+        - give_me_custody_or_give_me_death
+  - time_points: [10]
+    generators:
+      - sequence:
+        - omega

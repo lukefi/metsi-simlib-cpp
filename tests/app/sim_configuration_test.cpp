@@ -46,3 +46,11 @@ BOOST_AUTO_TEST_CASE(unique_set_parsing) {
     std::set<int> expected{1,2,3};
     BOOST_CHECK(result == expected);
 }
+
+BOOST_AUTO_TEST_CASE(time_points_parsing) {
+    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    auto events = content["simulation_events"];
+    auto results = parse_time_points_from_events_structure(events);
+    std::set<int> expected{0,5,10};
+    BOOST_CHECK(results == expected);
+}

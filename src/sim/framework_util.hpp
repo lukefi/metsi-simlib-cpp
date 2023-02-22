@@ -1,3 +1,6 @@
+#ifndef FRAMEWORK_UTIL_HPP
+#define FRAMEWORK_UTIL_HPP
+
 #include <map>
 #include <string>
 #include <optional>
@@ -43,3 +46,4 @@ public:
     const std::vector<OperationWithParameters>& get_operations() { return this->operation_candidates; };
 };
 
+#endif

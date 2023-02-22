@@ -42,8 +42,9 @@ public:
     void add_operations(const std::vector<OperationWithParameters>&);
     void add_nested_generator(const NestableGeneratorPrototype&);
     bool is_leaf() { return this->nested.empty(); };
-    const std::vector<NestableGeneratorPrototype>& get_nested() { return this->nested; };
-    const std::vector<OperationWithParameters>& get_operations() { return this->operation_candidates; };
+    const std::vector<NestableGeneratorPrototype>& get_nested() const { return this->nested; };
+    const std::vector<OperationWithParameters>& get_operations() const { return this->operation_candidates; };
+    const std::string get_type() const { return this->generator_type; };
 };
 
 #endif

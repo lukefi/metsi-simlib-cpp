@@ -70,3 +70,59 @@ BOOST_AUTO_TEST_CASE(generators_parsing_by_time) {
     BOOST_CHECK(time5_generators[0] != time5_generators[1]);
     BOOST_CHECK(time10_generators[0] != time10_generators[1]);
 }
+
+BOOST_AUTO_TEST_CASE(generators_parsing_non_nested) {
+    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    auto events = content["simulation_events"];
+    auto results = parse_simulation_events(events);
+    BOOST_CHECK(results.size() == 3);
+
+    auto time0_root = results.at(0);
+    auto time5_root = results.at(5);
+    auto time10_root = results.at(10);
+    BOOST_CHECK(time0_root.get_nested().size() == 2);
+    BOOST_CHECK(time0_root.get_operations().empty() == true);
+    BOOST_CHECK(time0_root.get_nested()[0].get_operations().size() == 1);
+    BOOST_CHECK(time0_root.get_nested()[0].get_operations()[0].first == "alpha");
+
+    BOOST_CHECK(time5_root.get_nested().size() == 2);
+
+    BOOST_CHECK(time10_root.get_nested().size() == 2);
+    BOOST_CHECK(time10_root.get_operations().empty() == true);
+    BOOST_CHECK(time10_root.get_nested()[1].get_operations().size() == 1);
+    BOOST_CHECK(time10_root.get_nested()[1].get_operations()[0].first == "omega");
+}
+
+BOOST_AUTO_TEST_CASE(generators_parsing_nested) {
+    YAML::Node content = read_yaml("simulation_events_nested.yaml");
+    auto events = content["simulation_events"];
+    auto results = parse_simulation_events(events);
+    auto time5_root = results.at(5);
+    BOOST_CHECK(time5_root.get_nested().size() == 1);
+    BOOST_CHECK(time5_root.get_type() == "sequence");
+
+    auto nested = time5_root.get_nested()[0].get_nested();
+    BOOST_CHECK(nested[0].get_type() == "alternatives");
+    BOOST_CHECK(nested[0].get_nested().empty() == true);
+    BOOST_CHECK(nested[0].get_operations().size() == 1);
+    BOOST_CHECK(nested[0].get_operations()[0].first == "choke_point");
+
+    BOOST_CHECK(nested[1].get_type() == "sequence");
+    BOOST_CHECK(nested[1].get_nested().size() == 2);
+    BOOST_CHECK(nested[1].get_operations().empty() == true);
+
+    auto level2 = nested[1].get_nested();
+    BOOST_CHECK(level2[0].get_type() == "sequence");
+    BOOST_CHECK(level2[0].get_operations().size() == 1);
+    BOOST_CHECK(level2[0].get_operations()[0].first == "liquidation");
+    BOOST_CHECK(level2[0].get_nested().empty() == true);
+    BOOST_CHECK(level2[1].get_type() == "alternatives");
+    BOOST_CHECK(level2[1].get_operations().size() == 2);
+    BOOST_CHECK(level2[1].get_operations()[0].first == "bankrupt");
+    BOOST_CHECK(level2[1].get_operations()[1].first == "solvent");
+
+    BOOST_CHECK(nested[2].get_type() == "alternatives");
+    BOOST_CHECK(nested[2].get_nested().empty() == true);
+    BOOST_CHECK(nested[2].get_operations().size() == 1);
+    BOOST_CHECK(nested[2].get_operations()[0].first == "give_me_custody_or_give_me_death");
+}

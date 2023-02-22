@@ -103,3 +103,59 @@ std::vector<YAML::Node> find_generator_blocks_for_time(int time_point, const YAM
     }
     return generators;
 }
+
+/**
+ * Recursively walk through a nested simulation event declaration node, producing a root generator node for it.
+ * @param generator_block a single generator declaration
+ * @return NestableGeneratorPrototype representation of the generator declaration
+ */
+NestableGeneratorPrototype build_generator(const YAML::Node& generator_block) {
+    auto current = *generator_block.begin();
+    auto current_key  = current.first.as<std::string>();
+    NestableGeneratorPrototype target(current_key);
+    for(auto entry : current.second) {
+        if(entry.Type() == YAML::NodeType::Scalar) {
+            // bare operation name without inline parameters
+            auto tag = entry.as<std::string>();
+            OperationWithParameters prepared_operation = std::make_pair(tag, Parameters{});
+            target.add_operations(std::vector<OperationWithParameters>{prepared_operation});
+        }
+        else if(entry.Type() == YAML::NodeType::Map) {
+            auto potentially_nested = *entry.begin();
+            auto keyname = potentially_nested.first.as<std::string>();
+            std::set<std::string> generator_types{"sequence", "alternatives"};
+            if(generator_types.contains(keyname)) {
+                // nested generator
+                auto nested = build_generator(entry);
+                target.add_nested_generator(nested);
+            }
+            else {
+                // in-line parametrized operation
+                auto tag = entry.as<std::string>();
+                target.add_operations(std::vector<OperationWithParameters>{parse_parameter_set(potentially_nested)});
+            }
+        }
+    }
+    return target;
+}
+
+/**
+ * Transform the simulation_events structure into a map of NestableGeneratorPrototype for each individual time point in
+ * the simulation.
+ * @param events_structure YAML node describing the simulation_events structure for the simulation
+ * @return a map of unique time points paired with a NestableGeneratorPrototype
+ */
+std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::Node& events_structure) {
+    using namespace YAML;
+    std::set<int> unique_time_points = parse_time_points_from_events_structure(events_structure);
+    std::map<int, NestableGeneratorPrototype> generators_by_time_point;
+    for(auto time_point : unique_time_points) {
+        auto generator_blocks = find_generator_blocks_for_time(time_point, events_structure);
+        NestableGeneratorPrototype root_generator("sequence");
+        for(const auto& generator_block : generator_blocks) {
+            root_generator.add_nested_generator(build_generator(generator_block));
+        }
+        generators_by_time_point.insert({time_point, root_generator});
+    }
+    return generators_by_time_point;
+}

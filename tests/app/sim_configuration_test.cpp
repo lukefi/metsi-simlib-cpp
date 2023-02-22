@@ -39,3 +39,10 @@ BOOST_AUTO_TEST_CASE(aliased_operations_parsing) {
     BOOST_CHECK(alias3 == expected3);
     BOOST_CHECK(alias4 == expected4);
 }
+
+BOOST_AUTO_TEST_CASE(unique_set_parsing) {
+    YAML::Node seq = YAML::Load("[3, 2, 2, 1]");
+    auto result = sequence_as_set<int>(seq);
+    std::set<int> expected{1,2,3};
+    BOOST_CHECK(result == expected);
+}

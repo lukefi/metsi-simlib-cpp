@@ -8,42 +8,42 @@
 #include "core_types.hpp"
 
 /**
- * Prepare the given T,map=>T parametrizable function as a T=>T closure capturing the parameter map.
+ * Prepare the given T,map=>T parameterizable event function as a T=>T closure capturing the parameter map.
  *
  * @tparam T a type representing the simulation state
- * @param op a T,map=>T function
- * @param params a map representing domain parameters for op
- * @return a T=>T closure capturing the map of domain parameters for op
+ * @param event a T,map=>T function
+ * @param params a map representing domain parameters for event
+ * @return a T=>T closure capturing the map of domain parameters for event
  */
-template<typename T> SimOperation<T> parameter_bound_operation(const ParameteredOperation<T>& op, const Parameters& params) {
-    return [op, params](std::shared_ptr<T> payload) { return op(payload, params); };
+template<typename T> EventFn<T> parameterized_event_closure(const ParameterizedEventFn<T>& event, const EventParameters& params) {
+    return [event, params](std::shared_ptr<T> sim_state) { return event(sim_state, params); };
 }
 
-std::pair<std::string, Parameters>
-resolve_operation_parameters(const std::string &, OperationsToParameters, OperationAliasMap, Parameters);
+std::pair<std::string, EventParameters>
+resolve_event_parameters(const std::string &event_label, EventLabelsWithParameters default_parameters = {}, EventLabelAliases aliases = {}, EventParameters override = {});
 
 /**
- * A nested class to portray operations with parameters for generators, structured as nested constructs for simulation
- * events. Contains the bare essentials for generating an EventDAG graph using a source for generator functions and
- * operation functions. An instance of this class is either
+ * A nested generator prototype class to portray event labels with parameters for generators, structured as
+ * nested constructs for simulation events. Contains the bare essentials for generating an EventDAG
+ * graph using a source for generator functions and event functions. An instance of this class is either
  *
- * 1) a leaf node with operations and no nested nodes, serving as instructions for running a generator function.
- * 2) an intermediate node with nested generators and no operations, serving as a wrapper for eventual leaf nodes.
+ * 1) a leaf node with event labels and no nested generators, serving as instructions for running a generator function.
+ * 2) an intermediate node with nested generators and no event labels, serving as a wrapper for eventual leaf nodes.
  *
- * Usage of the functions add_operations and add_nested_generators ensure the internal division between those two cases.
+ * Usage of the functions add_event_prototypes and add_nested_generators ensure the internal division between those two cases.
  */
 class NestableGeneratorPrototype {
-    mutable std::vector<OperationWithParameters> operation_candidates;
+    mutable std::vector<EventLabelWithParameters> event_prototypes;
     std::string generator_type;
-    mutable std::vector<NestableGeneratorPrototype> nested;
+    mutable std::vector<NestableGeneratorPrototype> nested_generator_prototypes;
 
 public:
     explicit NestableGeneratorPrototype(std::string);
-    void add_operations(const std::vector<OperationWithParameters>&);
+    void add_event_prototypes(const std::vector<EventLabelWithParameters> &event_prototypes);
     void add_nested_generator(const NestableGeneratorPrototype&);
-    bool is_leaf() { return this->nested.empty(); };
-    const std::vector<NestableGeneratorPrototype>& get_nested() const { return this->nested; };
-    const std::vector<OperationWithParameters>& get_operations() const { return this->operation_candidates; };
+    bool is_leaf() { return this->nested_generator_prototypes.empty(); };
+    const std::vector<NestableGeneratorPrototype>& get_nested_generator_prototypes() const { return this->nested_generator_prototypes; };
+    const std::vector<EventLabelWithParameters>& get_event_prototypes() const { return this->event_prototypes; };
     const std::string get_type() const { return this->generator_type; };
 };
 

@@ -15,20 +15,19 @@ template<typename T> class EventDAG;
 template<typename T> using EventNode = std::shared_ptr<EventDAG<T>>;
 template<typename T> using EventNodes = std::vector<EventNode<T>>;
 template<typename T> using LeafNodes = std::set<EventNode<T>>;
-template<typename T> using OperationResults = std::vector<std::shared_ptr<T>>;
-template<typename T> using SimOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
-template<typename T> using OperationChain = std::vector<SimOperation<T>>;
+template<typename T> using ResultStates = std::vector<std::shared_ptr<T>>;
+template<typename T> using EventFn = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
+template<typename T> using EventChain = std::vector<EventFn<T>>;
 
 /// Generator types
-template<typename T> using GeneratorFn = std::function<LeafNodes<T>(LeafNodes<T>, std::vector<SimOperation<T>>)>;
-
+template<typename T> using GeneratorFn = std::function<LeafNodes<T>(LeafNodes<T>, std::vector<EventFn<T>>)>;
 
 /// Utility types
-using Parameters = std::map<std::string, std::string>;
-using OperationWithParameters = std::pair<std::string, Parameters>;
-using OperationsToParameters = std::map<std::string, Parameters>;
-using OperationAliasMap = std::map<std::string, OperationWithParameters>;
-template<typename T> using ParameteredOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>, Parameters)>;
+using EventParameters = std::map<std::string, std::string>;
+using EventLabelWithParameters = std::pair<std::string, EventParameters>;
+using EventLabelsWithParameters = std::map<std::string, EventParameters>;
+using EventLabelAliases = std::map<std::string, EventLabelWithParameters>;
+template<typename T> using ParameterizedEventFn = std::function<std::shared_ptr<T>(std::shared_ptr<T>, EventParameters)>;
 
 #endif
 

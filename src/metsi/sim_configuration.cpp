@@ -5,29 +5,29 @@
 
 
 /**
- * Convert a YAML mapping for a single operation tag with parameters into a pair.
+ * Convert a YAML mapping for a single event label with parameters into a pair.
  * @param params YAML-CPP map iterator
- * @return pair of operation name and operation parameters
+ * @return pair of event label and event parameters
  */
-std::pair<std::string, Parameters> parse_parameter_set(const YAML::detail::iterator_value& params) {
-    auto operation_name = params.first.as<std::string>();
-    auto operation_params = params.second.as<std::map<std::string, std::string>>();
-    return {operation_name, operation_params};
+std::pair<std::string, EventParameters> parse_parameter_set(const YAML::detail::iterator_value& params) {
+    auto event_label = params.first.as<std::string>();
+    auto event_params = params.second.as<std::map<std::string, std::string>>();
+    return {event_label, event_params};
 }
 
 /**
- * Parse the control YAML structure's given operation_params section into a STL map.
- * @param params a YAML node corresponding to the control.yaml operation_params structure
- * @return Operation tags mapped to a set of Parameters
+ * Parse the control YAML structure's given event_parameters section into a STL map.
+ * @param params a YAML node corresponding to the control.yaml event_parameters structure
+ * @return Event labels mapped to a set of EventParameters
  */
-OperationsToParameters parse_default_parameters(const YAML::Node& params) {
-    OperationsToParameters result;
+EventLabelsWithParameters parse_default_parameters(const YAML::Node& params) {
+    EventLabelsWithParameters result;
     using namespace YAML;
     switch(params.Type()) {
         case NodeType::Map:
-            for(auto operation_mapping : params) {
-                if(operation_mapping.second.Type() == NodeType::Map) {
-                    result.insert(parse_parameter_set(operation_mapping));
+            for(auto event_mapping : params) {
+                if(event_mapping.second.Type() == NodeType::Map) {
+                    result.insert(parse_parameter_set(event_mapping));
                 }
             }
             break;
@@ -38,12 +38,12 @@ OperationsToParameters parse_default_parameters(const YAML::Node& params) {
 }
 
 /**
- * arse the control YAML structure's given operation_aliases section into a STL map.
- * @param params a YAML node corresponding to the control.yaml operation_aliases structure
- * @return Operation tag aliases mapped to another operation tag, optionally mapped to Parameters
+ * arse the control YAML structure's given event_aliases section into a STL map.
+ * @param params a YAML node corresponding to the control.yaml event_aliases structure
+ * @return Event label aliases mapped to another event label, optionally mapped to EventParameters
  */
-OperationAliasMap parse_operation_aliases(const YAML::Node& params) {
-    OperationAliasMap result;
+EventLabelAliases parse_event_aliases(const YAML::Node& params) {
+    EventLabelAliases result;
     using namespace YAML;
     switch(params.Type()) {
         case NodeType::Map:
@@ -105,7 +105,7 @@ std::vector<YAML::Node> find_generator_blocks_for_time(int time_point, const YAM
 }
 
 /**
- * Recursively walk through a nested simulation event declaration node, producing a root generator node for it.
+ * Recursively walk through a nested simulation event generator node, producing a root generator node for it.
  * @param generator_block a single generator declaration
  * @return NestableGeneratorPrototype representation of the generator declaration
  */
@@ -115,24 +115,25 @@ NestableGeneratorPrototype build_generator(const YAML::Node& generator_block) {
     NestableGeneratorPrototype target(current_key);
     for(auto entry : current.second) {
         if(entry.Type() == YAML::NodeType::Scalar) {
-            // bare operation name without inline parameters
-            auto tag = entry.as<std::string>();
-            OperationWithParameters prepared_operation = std::make_pair(tag, Parameters{});
-            target.add_operations(std::vector<OperationWithParameters>{prepared_operation});
+            // event label without inline parameters
+            auto label = entry.as<std::string>();
+            EventLabelWithParameters prepared_event = std::make_pair(label, EventParameters{});
+            target.add_event_prototypes(std::vector<EventLabelWithParameters>{prepared_event});
         }
         else if(entry.Type() == YAML::NodeType::Map) {
             auto potentially_nested = *entry.begin();
             auto keyname = potentially_nested.first.as<std::string>();
             std::set<std::string> generator_types{"sequence", "alternatives"};
             if(generator_types.contains(keyname)) {
-                // nested generator
+                // nested event generator
                 auto nested = build_generator(entry);
                 target.add_nested_generator(nested);
             }
             else {
-                // in-line parametrized operation
-                auto tag = entry.as<std::string>();
-                target.add_operations(std::vector<OperationWithParameters>{parse_parameter_set(potentially_nested)});
+                // in-line parameterized event label
+                auto label = entry.as<std::string>();
+                target.add_event_prototypes(
+                        std::vector<EventLabelWithParameters>{parse_parameter_set(potentially_nested)});
             }
         }
     }

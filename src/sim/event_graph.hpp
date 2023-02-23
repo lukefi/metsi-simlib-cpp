@@ -8,22 +8,22 @@
 #include "core_types.hpp"
 
 /**
- * A node in the directed graph of simulation events. Holds a simulation event function (T=>T continuation). Holds a
+ * A node in the directed graph of simulation events. Holds a simulation event function (T=>T). Holds a
  * list of follow-up nodes. This structure describes a full, computable simulation.
  * @tparam T a type representing the simulation state
  */
 template<typename T> class EventDAG : public std::enable_shared_from_this<EventDAG<T>> {
     private:
-    SimOperation<T> operation;
+    EventFn<T> event;
     EventNodes<T> followers;
     bool is_leaf();
 
     public:
     /**
      * Constructor creating a bare event node graph with a T=>T simulation event function. Use the class static function
-     * EventDAG::new_node(SimOperation<T>) to obtain a shared EventNode represenation for this object.
+     * EventDAG::new_node(EventFn<T>) to obtain a shared EventNode represenation for this object.
      */
-    explicit EventDAG(SimOperation<T>);
+    explicit EventDAG(EventFn<T>);
 
     /**
      * Attach an existing graph node as a follower of this node
@@ -38,18 +38,18 @@ template<typename T> class EventDAG : public std::enable_shared_from_this<EventD
 
     /**
      * Depth-first evaluation of the simulation represented by this graph.
-     * @return a vector of simulation states T as given after leaf node continuation
+     * @return a vector of simulation states T as given after leaf node event
      */
-    OperationResults<T> evaluate_depth(std::shared_ptr<T>);
+    ResultStates<T> evaluate_depth(std::shared_ptr<T>);
 
     /**
      * A static factory for new nodes of an EventDAG graph
-     * @return a graph node constructred with given T=>T continuation function
+     * @return a graph node constructred with given T=>T function
      */
-    static EventNode<T> new_node(SimOperation<T>);
+    static EventNode<T> new_node(EventFn<T>);
 };
 
-template<typename T> EventDAG<T>::EventDAG(SimOperation<T> op): operation(op) {}
+template<typename T> EventDAG<T>::EventDAG(EventFn<T> event): event(event) {}
 
 template<typename T> LeafNodes<T> EventDAG<T>::collect_leaf_nodes() {
     LeafNodes<T> results;
@@ -81,20 +81,20 @@ template<typename T> void EventDAG<T>::add_node(EventNode<T> next) {
     this->followers.push_back(next);
 }
 
-template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(std::shared_ptr<T> payload) {
-    OperationResults<T> results;
-    auto current = this->operation(payload);
+template<typename T> ResultStates<T> EventDAG<T>::evaluate_depth(std::shared_ptr<T> sim_state) {
+    ResultStates<T> results;
+    auto current = this->event(sim_state);
     if(this->is_leaf()) {
         results.push_back(current);
     }
     else {
         if(this->followers.size() == 1) {
-            OperationResults<T> sub_results = this->followers.front()->evaluate_depth(current);
+            ResultStates<T> sub_results = this->followers.front()->evaluate_depth(current);
             results.insert(results.end(), sub_results.begin(), sub_results.end());
         }
         else if(this->followers.size() > 1) {
             for (EventNode<T> node: this->followers) {
-                OperationResults<T> sub_results = node->evaluate_depth(std::make_shared<T>(*current));
+                ResultStates<T> sub_results = node->evaluate_depth(std::make_shared<T>(*current));
                 results.insert(results.end(), sub_results.begin(), sub_results.end());
             }
         }
@@ -102,8 +102,8 @@ template<typename T> OperationResults<T> EventDAG<T>::evaluate_depth(std::shared
     return results;
 }
 
-template<typename T> EventNode<T> EventDAG<T>::new_node(SimOperation<T> op) {
-    return std::make_shared<EventDAG<T>>(op);
+template<typename T> EventNode<T> EventDAG<T>::new_node(EventFn<T> event) {
+    return std::make_shared<EventDAG<T>>(event);
 }
 
 #endif

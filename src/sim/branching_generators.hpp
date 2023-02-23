@@ -4,27 +4,27 @@
 #include "core_types.hpp"
 /**
  * Extend given simulator event graph leaf nodes with new event nodes. Given operation functions represent the events.
- * The functions are OP=>OP continuation functions. They are attached to the leaf nodes as a single linear sequence of
+ * The functions are T=>T continuation functions. They are attached to the leaf nodes as a single linear sequence of
  * follower nodes, extending the depth of the graph by the length of the sequence.
  *
- * @tparam OP a type representing the simulation state
+ * @tparam T a type representing the simulation state
  * @param previous a collection of simulation event graph leaf nodes
- * @param operations a collection of OP=>OP functions representing simulation events
+ * @param operations a collection of T=>T functions representing simulation events
  * @return a collection of event graph leaf nodes as expanded by this generator function
  */
-template<typename OP> LeafNodes<OP> sequence(LeafNodes<OP> previous, OperationChain<OP> operations) {
+template<typename T> LeafNodes<T> sequence(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
-        EventNode<OP> sequence_root = nullptr;
-        EventNode<OP> leaf = nullptr;
-        for(SimOperation<OP> op : operations) {
-            auto next = EventDAG<OP>::new_node(op);
+        EventNode<T> sequence_root = nullptr;
+        EventNode<T> leaf = nullptr;
+        for(SimOperation<T> op : operations) {
+            auto next = EventDAG<T>::new_node(op);
             if(!sequence_root) {
                 sequence_root = next;
                 leaf = next;
-                for(EventNode<OP> prev : previous) {
+                for(EventNode<T> prev : previous) {
                    prev->add_node(sequence_root);
                 }
             }
@@ -33,7 +33,7 @@ template<typename OP> LeafNodes<OP> sequence(LeafNodes<OP> previous, OperationCh
                 leaf = next;
             }
         }
-        LeafNodes<OP> retval;
+        LeafNodes<T> retval;
         retval.insert(leaf);
         return retval;
     }
@@ -41,24 +41,24 @@ template<typename OP> LeafNodes<OP> sequence(LeafNodes<OP> previous, OperationCh
 
 /**
  * Extend given simulator event graph leaf nodes with new event nodes. Given operation functions represent the events.
- * The functions are OP=>OP continuation functions. They are attached to the leaf nodes as a new branches representing
+ * The functions are T=>T continuation functions. They are attached to the leaf nodes as a new branches representing
  * alternative simulation paths, extending the depth of the graph by 1.
  *
- * @tparam OP a type representing the simulation state
+ * @tparam T a type representing the simulation state
  * @param previous a collection of simulation event graph leaf nodes
- * @param operations a collection of OP=>OP functions representing simulation events
+ * @param operations a collection of T=>T functions representing simulation events
  * @return a collection of event graph leaf nodes as expanded by this generator function
  */
-template<typename OP> LeafNodes<OP> alternatives(LeafNodes<OP> previous, OperationChain<OP> operations) {
+template<typename T> LeafNodes<T> alternatives(LeafNodes<T> previous, OperationChain<T> operations) {
     if(operations.empty()) {
         return previous;
     }
     else {
-        LeafNodes<OP> leafs;
-        for(SimOperation<OP> op : operations) {
-            EventNode<OP> branch = EventDAG<OP>::new_node(op);
+        LeafNodes<T> leafs;
+        for(SimOperation<T> op : operations) {
+            EventNode<T> branch = EventDAG<T>::new_node(op);
             leafs.insert(branch);
-            for(EventNode<OP> prev : previous) {
+            for(EventNode<T> prev : previous) {
                 prev->add_node(branch);
             }
         }
@@ -66,12 +66,12 @@ template<typename OP> LeafNodes<OP> alternatives(LeafNodes<OP> previous, Operati
     }
 }
 
-template<typename OP> std::optional<GeneratorFn<OP>> generator_by_name(const std::string& name) {
+template<typename T> std::optional<GeneratorFn<T>> generator_by_name(const std::string& name) {
     if(name == "sequence") {
-        return {sequence<OP>};
+        return {sequence<T>};
     }
     else if(name == "alternatives") {
-        return {alternatives<OP>};
+        return {alternatives<T>};
     }
     return {};
 }

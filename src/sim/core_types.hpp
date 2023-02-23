@@ -11,16 +11,16 @@
 */
 
 /// Event graph types
-template<typename OP> class EventDAG;
-template<typename OP> using EventNode = std::shared_ptr<EventDAG<OP>>;
-template<typename OP> using EventNodes = std::vector<EventNode<OP>>;
-template<typename OP> using LeafNodes = std::set<EventNode<OP>>;
-template<typename OP> using OperationResults = std::vector<std::shared_ptr<OP>>;
-template<typename OP> using SimOperation = std::function<std::shared_ptr<OP>(std::shared_ptr<OP>)>;
-template<typename OP> using OperationChain = std::vector<SimOperation<OP>>;
+template<typename T> class EventDAG;
+template<typename T> using EventNode = std::shared_ptr<EventDAG<T>>;
+template<typename T> using EventNodes = std::vector<EventNode<T>>;
+template<typename T> using LeafNodes = std::set<EventNode<T>>;
+template<typename T> using OperationResults = std::vector<std::shared_ptr<T>>;
+template<typename T> using SimOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>)>;
+template<typename T> using OperationChain = std::vector<SimOperation<T>>;
 
 /// Generator types
-template<typename OP> using GeneratorFn = std::function<LeafNodes<OP>(LeafNodes<OP>, std::vector<SimOperation<OP>>)>;
+template<typename T> using GeneratorFn = std::function<LeafNodes<T>(LeafNodes<T>, std::vector<SimOperation<T>>)>;
 
 
 /// Utility types
@@ -28,7 +28,7 @@ using Parameters = std::map<std::string, std::string>;
 using OperationWithParameters = std::pair<std::string, Parameters>;
 using OperationsToParameters = std::map<std::string, Parameters>;
 using OperationAliasMap = std::map<std::string, OperationWithParameters>;
-template<typename CU> using ParameteredOperation = std::function<std::shared_ptr<CU>(std::shared_ptr<CU>, Parameters)>;
+template<typename T> using ParameteredOperation = std::function<std::shared_ptr<T>(std::shared_ptr<T>, Parameters)>;
 
 #endif
 

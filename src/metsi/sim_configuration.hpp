@@ -6,8 +6,8 @@
 #include <vector>
 #include <set>
 
-OperationsToParameters parse_default_parameters(const YAML::Node& params);
-OperationAliasMap parse_operation_aliases(const YAML::Node& aliases);
+EventLabelsWithParameters parse_default_parameters(const YAML::Node& params);
+EventLabelAliases parse_event_aliases(const YAML::Node& params);
 std::set<int> parse_time_points_from_events_structure(const YAML::Node& events_structure);
 std::vector<YAML::Node> find_generator_blocks_for_time(int time_point, const YAML::Node& events_structure);
 std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::Node& events_structure);

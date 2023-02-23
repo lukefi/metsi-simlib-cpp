@@ -1,17 +1,17 @@
-operation_params:
-  operation1:
+event_parameters:
+  event1:
     param1: 1
     param2: 2
-  operation2:
+  event2:
     - bogus
     - stuff
 
-operation_aliases:
+event_aliases:
   alias:
-    operation:
+    event:
       param1: 3
   alias2:
-    operation:
+    event:
       param2: 4
   alias3:
     alias2:

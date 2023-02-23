@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE operation_util
+#define BOOST_TEST_MODULE framework_util
 #include <boost/test/unit_test.hpp>
 #include <framework_util.hpp>
 
@@ -8,68 +8,68 @@ std::shared_ptr<int> increment_param(std::shared_ptr<int> val, std::map<std::str
     return val;
 }
 
-BOOST_AUTO_TEST_CASE(parametered_operation_preparation) {
+BOOST_AUTO_TEST_CASE(parametered_event_preparation) {
     std::map<std::string, std::string> params{{"amount", "2"}};
-    SimOperation<int> op = parameter_bound_operation<int>(increment_param, params);
+    EventFn<int> event = parameterized_event_closure<int>(increment_param, params);
     auto start = std::make_shared<int>(1);
-    auto l1 = op(start);
-    auto l2 = op(l1);
+    auto l1 = event(start);
+    auto l2 = event(l1);
     BOOST_CHECK(*l2 == 5);
 }
 
-BOOST_AUTO_TEST_CASE(unaliased_operation_default_parameters) {
+BOOST_AUTO_TEST_CASE(unaliased_event_default_parameters) {
     /* Test a simple
-     * operation_params:
-     *   base_operation:
+     * event_parameters:
+     *   base_event:
      *     value: 1
      * simulation_events:
      *   - time_points: [0]
      *     generators:
      *       - sequence:
-     *         - base_operation
+     *         - base_event
      * */
-    Parameters default_parameters{{"value", "1"}};
-    OperationsToParameters defaults{{"base_operation", default_parameters}};
+    EventParameters default_parameters{{"value", "1"}};
+    EventLabelsWithParameters defaults{{"base_event", default_parameters}};
 
-    Parameters expected_parameters{{"value", "1"}};
-    auto expected_result = std::make_pair(std::string{"base_operation"}, expected_parameters);
-    auto result = resolve_operation_parameters("base_operation", defaults, {}, {});
+    EventParameters expected_parameters{{"value", "1"}};
+    auto expected_result = std::make_pair(std::string{"base_event"}, expected_parameters);
+    auto result = resolve_event_parameters("base_event", defaults, {}, {});
     BOOST_CHECK(result == expected_result);
 }
 
-BOOST_AUTO_TEST_CASE(operation_single_alias) {
+BOOST_AUTO_TEST_CASE(event_single_alias) {
     /*
-     * operation_aliases:
-     *   alias_operation:
-     *     base_operation:
+     * event_aliases:
+     *   alias_event:
+     *     base_event:
      *       value: 1
      * simulation_events:
      *   - time_points: [0]
      *     generators:
      *       - sequence:
-     *         - alias_operation
+     *         - alias_event
      * */
-    Parameters alias_override{{"value", "1"}};
-    OperationWithParameters alias{"base_operation", alias_override};
-    OperationAliasMap aliases{{"alias_operation", alias}};
+    EventParameters alias_override{{"value", "1"}};
+    EventLabelWithParameters alias{"base_event", alias_override};
+    EventLabelAliases aliases{{"alias_event", alias}};
 
-    auto expected_result = std::make_pair(std::string{"base_operation"}, alias_override);
-    auto result = resolve_operation_parameters("alias_operation", {}, aliases, {});
+    auto expected_result = std::make_pair(std::string{"base_event"}, alias_override);
+    auto result = resolve_event_parameters("alias_event", {}, aliases, {});
     BOOST_CHECK(result == expected_result);
 }
 
-BOOST_AUTO_TEST_CASE(operation_chained_alias) {
+BOOST_AUTO_TEST_CASE(event_chained_alias) {
     /*
-     * operation_aliases:
-     *   top_operation:
-     *     alias1_operation:
+     * event_aliases:
+     *   top_event:
+     *     alias1_event:
      *       value: 7             <-- highest precedence override
-     *   alias1_operation:
-     *     alias2_operation:
+     *   alias1_event:
+     *     alias2_event:
      *       value: 2
      *       other: 1             <-- highest precedence override
-     *   alias2_operation:
-     *     base_operation:
+     *   alias2_event:
+     *     base_event:
      *       value: 5
      *       other: 10
      *       another: 20
@@ -77,39 +77,39 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias) {
      *   - time_points: [0]
      *     generators:
      *       - sequence:
-     *         - top_operation
+     *         - top_event
      * */
-    Parameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
-    Parameters alias1_override{{"value", "2"}, {"other", "1"}};
-    Parameters top_override{{"value", "7"}};
-    OperationWithParameters alias2{"base_operation", alias2_override};
-    OperationWithParameters alias1{"alias2_operation", alias1_override};
-    OperationWithParameters top{"alias1_operation", top_override};
-    OperationAliasMap aliases{
-        {"top_operation", top},
-        {"alias1_operation", alias1},
-        {"alias2_operation", alias2}
+    EventParameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
+    EventParameters alias1_override{{"value", "2"}, {"other", "1"}};
+    EventParameters top_override{{"value", "7"}};
+    EventLabelWithParameters alias2{"base_event", alias2_override};
+    EventLabelWithParameters alias1{"alias2_event", alias1_override};
+    EventLabelWithParameters top{"alias1_event", top_override};
+    EventLabelAliases aliases{
+        {"top_event", top},
+        {"alias1_event", alias1},
+        {"alias2_event", alias2}
     };
 
-    Parameters expected_result_parameters{{"value", "7"}, {"other", "1"}, {"another", "20"}};
-    auto expected_result = std::make_pair(std::string{"base_operation"}, expected_result_parameters);
+    EventParameters expected_result_parameters{{"value", "7"}, {"other", "1"}, {"another", "20"}};
+    auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_operation_parameters("top_operation", {}, aliases, {});
+    auto result = resolve_event_parameters("top_event", {}, aliases, {});
     BOOST_CHECK(result == expected_result);
 }
 
-BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters) {
+BOOST_AUTO_TEST_CASE(event_chained_alias_with_inline_parameters) {
     /*
-     * operation_aliases:
-     *   top_operation:
-     *     alias1_operation:
+     * event_aliases:
+     *   top_event:
+     *     alias1_event:
      *       value: 7
-     *   alias1_operation:
-     *     alias2_operation:
+     *   alias1_event:
+     *     alias2_event:
      *       value: 2
      *       other: 1             <-- highest precedence override
-     *   alias2_operation:
-     *     base_operation:
+     *   alias2_event:
+     *     base_event:
      *       value: 5
      *       other: 10
      *       another: 20
@@ -117,46 +117,46 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters) {
      *   - time_points: [0]
      *     generators:
      *       - sequence:
-     *         - top_operation:
+     *         - top_event:
      *             value: 50      <-- highest precedence override
      * */
-    Parameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
-    Parameters alias1_override{{"value", "2"}, {"other", "1"}};
-    Parameters top_override{{"value", "7"}};
-    Parameters top_inline{{"value", "50"}};
-    OperationWithParameters alias2{"base_operation", alias2_override};
-    OperationWithParameters alias1{"alias2_operation", alias1_override};
-    OperationWithParameters top{"alias1_operation", top_override};
-    OperationAliasMap aliases{
-            {"top_operation", top},
-            {"alias1_operation", alias1},
-            {"alias2_operation", alias2}
+    EventParameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
+    EventParameters alias1_override{{"value", "2"}, {"other", "1"}};
+    EventParameters top_override{{"value", "7"}};
+    EventParameters top_inline{{"value", "50"}};
+    EventLabelWithParameters alias2{"base_event", alias2_override};
+    EventLabelWithParameters alias1{"alias2_event", alias1_override};
+    EventLabelWithParameters top{"alias1_event", top_override};
+    EventLabelAliases aliases{
+            {"top_event", top},
+            {"alias1_event", alias1},
+            {"alias2_event", alias2}
     };
 
-    Parameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}};
-    auto expected_result = std::make_pair(std::string{"base_operation"}, expected_result_parameters);
+    EventParameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}};
+    auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_operation_parameters("top_operation", {}, aliases, top_inline);
+    auto result = resolve_event_parameters("top_event", {}, aliases, top_inline);
     BOOST_CHECK(result == expected_result);
 }
 
-BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters_and_default_parameters) {
+BOOST_AUTO_TEST_CASE(event_chained_alias_with_inline_parameters_and_default_parameters) {
     /*
-     * operation_params:
-     *   base_operation:
+     * event_parameters:
+     *   base_event:
      *     number_of_the_beast: 666
-     *   some_unused_operation:
+     *   some_unused_event:
      *     it_is_over: 9000
-     * operation_aliases:
-     *   top_operation:
-     *     alias1_operation:
+     * event_aliases:
+     *   top_event:
+     *     alias1_event:
      *       value: 7
-     *   alias1_operation:
-     *     alias2_operation:
+     *   alias1_event:
+     *     alias2_event:
      *       value: 2
      *       other: 1             <-- highest precedence override
-     *   alias2_operation:
-     *     base_operation:
+     *   alias2_event:
+     *     base_event:
      *       value: 5
      *       other: 10
      *       another: 20
@@ -164,55 +164,55 @@ BOOST_AUTO_TEST_CASE(operation_chained_alias_with_inline_parameters_and_default_
      *   - time_points: [0]
      *     generators:
      *       - sequence:
-     *         - top_operation:
+     *         - top_event:
      *             value: 50      <-- highest precedence override
      * */
-    Parameters base_parameters{{"number_of_the_beast", "666"}};
-    Parameters unused_parameters{{"it_is_over", "9000"}};
-    OperationsToParameters default_parameters{
-            {"base_operation", base_parameters},
-            {"some_unused_operation", unused_parameters}
+    EventParameters base_parameters{{"number_of_the_beast", "666"}};
+    EventParameters unused_parameters{{"it_is_over", "9000"}};
+    EventLabelsWithParameters default_parameters{
+            {"base_event", base_parameters},
+            {"some_unused_event", unused_parameters}
     };
 
-    Parameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
-    Parameters alias1_override{{"value", "2"}, {"other", "1"}};
-    Parameters top_override{{"value", "7"}};
-    Parameters top_inline{{"value", "50"}};
-    OperationWithParameters alias2{"base_operation", alias2_override};
-    OperationWithParameters alias1{"alias2_operation", alias1_override};
-    OperationWithParameters top{"alias1_operation", top_override};
-    OperationAliasMap aliases{
-            {"top_operation", top},
-            {"alias1_operation", alias1},
-            {"alias2_operation", alias2}
+    EventParameters alias2_override{{"value", "5"}, {"other", "10"}, {"another", "20"}};
+    EventParameters alias1_override{{"value", "2"}, {"other", "1"}};
+    EventParameters top_override{{"value", "7"}};
+    EventParameters top_inline{{"value", "50"}};
+    EventLabelWithParameters alias2{"base_event", alias2_override};
+    EventLabelWithParameters alias1{"alias2_event", alias1_override};
+    EventLabelWithParameters top{"alias1_event", top_override};
+    EventLabelAliases aliases{
+            {"top_event", top},
+            {"alias1_event", alias1},
+            {"alias2_event", alias2}
     };
 
-    Parameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}, {"number_of_the_beast", "666"}};
-    auto expected_result = std::make_pair(std::string{"base_operation"}, expected_result_parameters);
+    EventParameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}, {"number_of_the_beast", "666"}};
+    auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_operation_parameters("top_operation", default_parameters, aliases, top_inline);
+    auto result = resolve_event_parameters("top_event", default_parameters, aliases, top_inline);
     BOOST_CHECK(result == expected_result);
 }
 
 BOOST_AUTO_TEST_CASE(leaf_generator_prototype) {
     NestableGeneratorPrototype gen{"sequence"};
-    Parameters params{{"param1", "1"}};
-    std::vector<OperationWithParameters> ops{{"op1", params}, {"op2", params}};
-    gen.add_operations(ops);
-    BOOST_CHECK(gen.get_operations().size() == 2);
-    BOOST_CHECK(gen.get_nested().empty() == true);
+    EventParameters params{{"param1", "1"}};
+    std::vector<EventLabelWithParameters> events{{"event1", params}, {"event2", params}};
+    gen.add_event_prototypes(events);
+    BOOST_CHECK(gen.get_event_prototypes().size() == 2);
+    BOOST_CHECK(gen.get_nested_generator_prototypes().empty() == true);
     BOOST_CHECK(gen.is_leaf() == true);
 }
 
-BOOST_AUTO_TEST_CASE(nested_generator_prototype_with_existing_operations) {
+BOOST_AUTO_TEST_CASE(nested_generator_prototype_with_existing_events) {
     NestableGeneratorPrototype gen{"sequence"};
     NestableGeneratorPrototype gen2{"alternatives"};
-    Parameters params{{"param1", "1"}};
-    std::vector<OperationWithParameters> ops{{"op1", params}, {"op2", params}};
-    gen.add_operations(ops);
-    gen2.add_operations(ops);
+    EventParameters params{{"param1", "1"}};
+    std::vector<EventLabelWithParameters> events{{"event1", params}, {"event2", params}};
+    gen.add_event_prototypes(events);
+    gen2.add_event_prototypes(events);
     gen.add_nested_generator(gen2);
-    BOOST_CHECK(gen.get_operations().empty() == true);
-    BOOST_CHECK(gen.get_nested().size() == 2);
+    BOOST_CHECK(gen.get_event_prototypes().empty() == true);
+    BOOST_CHECK(gen.get_nested_generator_prototypes().size() == 2);
     BOOST_CHECK(gen.is_leaf() == false);
 }

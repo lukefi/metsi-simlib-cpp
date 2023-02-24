@@ -1,20 +1,39 @@
 event_parameters:
-  event1:
+  base_event:
     param1: 1
-    param2: 2
-  event2:
+    param2: 1
+    param3: 1
+    param4: 1
+  bad_format_parameters_event:
     - bogus
     - stuff
 
 event_aliases:
-  alias:
-    event:
-      param1: 3
-  alias2:
-    event:
-      param2: 4
-  alias3:
-    alias2:
-      param1: 10
-  alias4:
-    alias2
+  aliased_event_1:
+    base_event:
+      param1: 2
+  aliased_event_2:
+    base_event:
+      param2: 2
+      param5: 2
+  aliased_event_3:
+    aliased_event_2:
+      param2: 2
+      param3: 2
+  aliased_event_4:
+    some_other_event
+
+simulation_events:
+  - time_points: [0]
+    generators:
+      - sequence:
+        - aliased_event_1:
+            param1: 4
+        - aliased_event_2:
+            param3: 4
+        - aliased_event_3:
+            param6: 4
+        - aliased_event_4
+        - base_event
+        - some_other_event
+        - bad_format_parameters_event

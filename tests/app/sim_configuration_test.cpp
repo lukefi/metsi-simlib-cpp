@@ -7,14 +7,17 @@ BOOST_AUTO_TEST_CASE(default_parameters_parsing) {
     YAML::Node content = read_yaml("event_aliasing.yaml");
     YAML::Node params_node = content["event_parameters"];
     EventLabelsWithParameters default_params = parse_default_parameters(params_node);
-    BOOST_CHECK(default_params.contains("event1") == true);
-    BOOST_CHECK(default_params.contains("event2") == false);
+    BOOST_CHECK(default_params.contains("base_event") == true);
+    BOOST_CHECK(default_params.contains("bad_format") == false);
 
-    EventParameters params = default_params["event1"];
-    auto param1 = params["param1"];
-    auto param2 = params["param2"];
-    BOOST_CHECK(param1 == "1");
-    BOOST_CHECK(param2 == "2");
+    EventParameters params = default_params["base_event"];
+    EventParameters expectation = {
+            {"param1", "1"},
+            {"param2", "1"},
+            {"param3", "1"},
+            {"param4", "1"}
+    };
+    BOOST_CHECK(expectation == params);
 }
 
 BOOST_AUTO_TEST_CASE(aliased_events_parsing) {
@@ -23,17 +26,18 @@ BOOST_AUTO_TEST_CASE(aliased_events_parsing) {
     EventLabelAliases event_aliases = parse_event_aliases(aliases_node);
     BOOST_CHECK(event_aliases.size() == 4);
 
-    auto alias1 = event_aliases["alias"];
-    auto alias2 = event_aliases["alias2"];
-    auto alias3 = event_aliases["alias3"];
-    auto alias4 = event_aliases["alias4"];
-    EventParameters aliased_param1{{"param1", "3"}};
-    EventLabelWithParameters expected1{"event", aliased_param1};
-    EventParameters aliased_param2{{"param2", "4"}};
-    EventLabelWithParameters expected2{"event", aliased_param2};
-    EventParameters aliased_param3{{"param1", "10"}};
-    EventLabelWithParameters expected3{"alias2", aliased_param3};
-    EventLabelWithParameters expected4{"alias2", {}};
+    auto alias1 = event_aliases["aliased_event_1"];
+    auto alias2 = event_aliases["aliased_event_2"];
+    auto alias3 = event_aliases["aliased_event_3"];
+    auto alias4 = event_aliases["aliased_event_4"];
+    EventParameters aliased_param1{{"param1", "2"}};
+    EventParameters aliased_param2{{"param2", "2"}, {"param5", "2"}};
+    EventParameters aliased_param3{{"param2", "2"}, {"param3", "2"}};
+    EventParameters aliased_param4{};
+    EventLabelWithParameters expected1{"base_event", aliased_param1};
+    EventLabelWithParameters expected2{"base_event", aliased_param2};
+    EventLabelWithParameters expected3{"aliased_event_2", aliased_param3};
+    EventLabelWithParameters expected4{"some_other_event", {}};
     BOOST_CHECK(alias1 == expected1);
     BOOST_CHECK(alias2 == expected2);
     BOOST_CHECK(alias3 == expected3);

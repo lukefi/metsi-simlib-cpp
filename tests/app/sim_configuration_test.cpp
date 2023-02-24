@@ -130,3 +130,70 @@ BOOST_AUTO_TEST_CASE(generators_parsing_nested) {
     BOOST_CHECK(nested[2].get_event_prototypes().size() == 1);
     BOOST_CHECK(nested[2].get_event_prototypes()[0].first == "give_me_custody_or_give_me_death");
 }
+
+BOOST_AUTO_TEST_CASE(test_alias_resolver_closure) {
+    auto content = read_yaml("event_aliasing.yaml");
+    auto resolver = alias_resolver_closure(content);
+    auto events_node = content["simulation_events"];
+    auto results = parse_simulation_events(events_node);
+    auto events = results.at(0).get_nested_generator_prototypes()[0].get_event_prototypes();
+    BOOST_CHECK(events.size() == 7);
+
+    {
+        auto event = resolver(events[0]);
+        EventParameters params{{"param1", "4"},
+                               {"param2", "1"},
+                               {"param3", "1"},
+                               {"param4", "1"}};
+        EventLabelWithParameters expected{"base_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[1]);
+        EventParameters params{{"param1", "1"},
+                                {"param2", "2"},
+                                {"param3", "4"},
+                                {"param4", "1"},
+                                {"param5", "2"}};
+        EventLabelWithParameters expected{"base_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[2]);
+        EventParameters params{{"param1", "1"},
+                                {"param2", "2"},
+                                {"param3", "2"},
+                                {"param4", "1"},
+                                {"param5", "2"},
+                                {"param6", "4"}};
+        EventLabelWithParameters expected{"base_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[3]);
+        EventParameters params{};
+        EventLabelWithParameters expected{"some_other_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[4]);
+        EventParameters params{{"param1", "1"},
+                               {"param2", "1"},
+                               {"param3", "1"},
+                               {"param4", "1"}};
+        EventLabelWithParameters expected{"base_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[5]);
+        EventParameters params{};
+        EventLabelWithParameters expected{"some_other_event", params};
+        BOOST_CHECK(event == expected);
+    }
+    {
+        auto event = resolver(events[6]);
+        EventParameters params{};
+        EventLabelWithParameters expected{"bad_format_parameters_event", params};
+        BOOST_CHECK(event == expected);
+    }
+}

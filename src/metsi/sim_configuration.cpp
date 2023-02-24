@@ -159,3 +159,20 @@ std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::No
     }
     return generators_by_time_point;
 }
+
+/**
+ * Prepare a closure which captures event default parameters and event aliases from given YAML source. The closure
+ * performs a transformation for given EventLabelWithParameters with simulator application framework's
+ * resolve_event_aliasing utility function. This closure is passed as a resolver function for EventDAG creation process.
+ *
+ * @param control_yaml a YAML node with optional event_aliases and optional event_parameters blocks
+ * @return an EventLabelWithParameters=>EventLabelWithParameters closure
+ */
+std::function<EventLabelWithParameters(EventLabelWithParameters event_prototype)>
+alias_resolver_closure(const YAML::Node& control_yaml) {
+    auto default_parameters = parse_default_parameters(control_yaml["event_parameters"]);
+    auto event_aliases = parse_event_aliases(control_yaml["event_aliases"]);
+    return [default_parameters, event_aliases](const EventLabelWithParameters& event_prototype) {
+        return resolve_event_aliasing(event_prototype.first, default_parameters, event_aliases, event_prototype.second);
+    };
+}

@@ -20,6 +20,9 @@ concept LessThanComparable = requires( T a, T b ) {
 template<LessThanComparable T> std::set<T> sequence_as_set(const YAML::Node& sequence) {
     auto vec = sequence.as<std::vector<T>>();
     return {vec.begin(), vec.end()};
-}
+};
+
+std::function<EventLabelWithParameters(EventLabelWithParameters event_prototype)>
+alias_resolver_closure(const YAML::Node&);
 
 #endif

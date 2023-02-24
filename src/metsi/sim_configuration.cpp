@@ -131,7 +131,6 @@ NestableGeneratorPrototype build_generator(const YAML::Node& generator_block) {
             }
             else {
                 // in-line parameterized event label
-                auto label = entry.as<std::string>();
                 target.add_event_prototypes(
                         std::vector<EventLabelWithParameters>{parse_parameter_set(potentially_nested)});
             }

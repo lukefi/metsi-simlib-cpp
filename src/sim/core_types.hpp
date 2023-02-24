@@ -28,6 +28,7 @@ using EventLabelWithParameters = std::pair<std::string, EventParameters>;
 using EventLabelsWithParameters = std::map<std::string, EventParameters>;
 using EventLabelAliases = std::map<std::string, EventLabelWithParameters>;
 template<typename T> using ParameterizedEventFn = std::function<std::shared_ptr<T>(std::shared_ptr<T>, EventParameters)>;
+template<typename T> using EventFnResolver = std::function<EventFn<T>(EventLabelWithParameters)>;
 
 #endif
 

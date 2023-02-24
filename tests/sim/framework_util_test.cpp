@@ -216,3 +216,70 @@ BOOST_AUTO_TEST_CASE(nested_generator_prototype_with_existing_events) {
     BOOST_CHECK(gen.get_nested_generator_prototypes().size() == 2);
     BOOST_CHECK(gen.is_leaf() == false);
 }
+
+BOOST_AUTO_TEST_CASE(graph_constructing_from_nested_generator_prototype) {
+    auto dummy_resolver = [](EventLabelWithParameters _) { return [](std::shared_ptr<int> val) {
+        *val += 1;
+        return val;
+    };};
+    EventParameters params{};
+    EventLabelWithParameters event{"inc", params};
+    std::vector<EventLabelWithParameters> events{event};
+    auto state = std::make_shared<int>(0);
+    EventNode<int> root = EventDAG<int>::new_node(dummy_resolver(event));
+    LeafNodes<int> nodes{root};
+
+    /*
+     * This describes the following event structure and should result in 3 alternative results. The test proves this
+     * by performing the computation.
+     *                              # initial, 0
+     * - inc                        # root, 1
+     * - sequence:              # level 0
+     *     - sequence:          # level 1_1
+     *         - inc                # 2
+     *     - alternatives:      # level 1_2
+     *         - inc            # wrapped level 1_2_1, 3
+     *         - sequence:      # level 1_2_2
+     *             - inc            # 3
+     *             - inc            # 4
+     *         - sequence:      # level 1_2_3
+     *             - inc            # 3
+     *             - inc            # 4
+     *             - inc            # 5
+     *     - sequence:          # level 1_3
+     *         - inc                # 4, 5, 6
+     */
+    NestableGeneratorPrototype l0{"sequence"};
+    NestableGeneratorPrototype l1_1{"sequence"};
+    NestableGeneratorPrototype l1_2{"alternatives"};
+    NestableGeneratorPrototype l1_2_2{"sequence"};
+    NestableGeneratorPrototype l1_2_3{"sequence"};
+    NestableGeneratorPrototype l1_3{"sequence"};
+
+    l1_1.add_event_prototypes(events);
+    l1_2.add_event_prototypes(events);
+
+    l1_2_2.add_event_prototypes(events);
+    l1_2_2.add_event_prototypes(events);
+
+    l1_2_3.add_event_prototypes(events);
+    l1_2_3.add_event_prototypes(events);
+    l1_2_3.add_event_prototypes(events);
+
+    l1_2.add_nested_generator(l1_2_2);
+    l1_2.add_nested_generator(l1_2_3);
+
+    l1_3.add_event_prototypes(events);
+
+    l0.add_nested_generator(l1_1);
+    l0.add_nested_generator(l1_2);
+    l0.add_nested_generator(l1_3);
+
+    LeafNodes<int> leafs = construct_event_graph<int>(l0, dummy_resolver, nodes);
+    BOOST_CHECK(leafs.size() == 1); // graph final node is from a sequence
+
+    ResultStates<int> results = root->evaluate_depth(state);
+    BOOST_CHECK(*results[0] == 4);
+    BOOST_CHECK(*results[1] == 5);
+    BOOST_CHECK(*results[2] == 6);
+}

@@ -9,9 +9,8 @@
  *
  * @return pair representing a base event label and its parameter map in the given context
  */
-std::pair<std::string, EventParameters>
-resolve_event_parameters(const std::string &event_label, EventLabelsWithParameters default_parameters,
-                         EventLabelAliases aliases, EventParameters override) {
+EventLabelWithParameters resolve_event_aliasing(const std::string &event_label,
+        EventLabelsWithParameters default_parameters, EventLabelAliases aliases, EventParameters override) {
     if(!aliases.contains(event_label) && !default_parameters.contains(event_label)) {
         return {std::make_pair(event_label, override)};
     }
@@ -25,7 +24,7 @@ resolve_event_parameters(const std::string &event_label, EventLabelsWithParamete
     EventParameters merged;
     merged.merge(override);
     merged.merge(target.second);
-    return resolve_event_parameters(target.first, default_parameters, aliases, merged);
+    return resolve_event_aliasing(target.first, default_parameters, aliases, merged);
 }
 
 NestableGeneratorPrototype::NestableGeneratorPrototype(std::string t): generator_type(std::move(t)) {}

@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(unaliased_event_default_parameters) {
 
     EventParameters expected_parameters{{"value", "1"}};
     auto expected_result = std::make_pair(std::string{"base_event"}, expected_parameters);
-    auto result = resolve_event_parameters("base_event", defaults, {}, {});
+    auto result = resolve_event_aliasing("base_event", defaults, {}, {});
     BOOST_CHECK(result == expected_result);
 }
 
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(event_single_alias) {
     EventLabelAliases aliases{{"alias_event", alias}};
 
     auto expected_result = std::make_pair(std::string{"base_event"}, alias_override);
-    auto result = resolve_event_parameters("alias_event", {}, aliases, {});
+    auto result = resolve_event_aliasing("alias_event", {}, aliases, {});
     BOOST_CHECK(result == expected_result);
 }
 
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(event_chained_alias) {
     EventParameters expected_result_parameters{{"value", "7"}, {"other", "1"}, {"another", "20"}};
     auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_event_parameters("top_event", {}, aliases, {});
+    auto result = resolve_event_aliasing("top_event", {}, aliases, {});
     BOOST_CHECK(result == expected_result);
 }
 
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(event_chained_alias_with_inline_parameters) {
     EventParameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}};
     auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_event_parameters("top_event", {}, aliases, top_inline);
+    auto result = resolve_event_aliasing("top_event", {}, aliases, top_inline);
     BOOST_CHECK(result == expected_result);
 }
 
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(event_chained_alias_with_inline_parameters_and_default_para
     EventParameters expected_result_parameters{{"value", "50"}, {"other", "1"}, {"another", "20"}, {"number_of_the_beast", "666"}};
     auto expected_result = std::make_pair(std::string{"base_event"}, expected_result_parameters);
 
-    auto result = resolve_event_parameters("top_event", default_parameters, aliases, top_inline);
+    auto result = resolve_event_aliasing("top_event", default_parameters, aliases, top_inline);
     BOOST_CHECK(result == expected_result);
 }
 

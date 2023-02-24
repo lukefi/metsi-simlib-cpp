@@ -19,8 +19,8 @@ template<typename T> EventFn<T> parameterized_event_closure(const ParameterizedE
     return [event, params](std::shared_ptr<T> sim_state) { return event(sim_state, params); };
 }
 
-std::pair<std::string, EventParameters>
-resolve_event_parameters(const std::string &event_label, EventLabelsWithParameters default_parameters = {}, EventLabelAliases aliases = {}, EventParameters override = {});
+EventLabelWithParameters resolve_event_aliasing(const std::string &event_label, EventLabelsWithParameters default_parameters, EventLabelAliases aliases,
+                                                EventParameters override);
 
 /**
  * A nested generator prototype class to portray event labels with parameters for generators, structured as

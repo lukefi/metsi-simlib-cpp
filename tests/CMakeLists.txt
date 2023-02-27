@@ -57,3 +57,9 @@ add_custom_command(TARGET sim_configuration_test POST_BUILD
         ${CMAKE_CURRENT_SOURCE_DIR}/app/simulation_events_nested.yaml
         $<TARGET_FILE_DIR:sim_configuration_test>
         )
+
+add_custom_command(TARGET sim_configuration_test POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/app/full_simulation_test.yaml
+        $<TARGET_FILE_DIR:sim_configuration_test>
+        )

@@ -197,3 +197,54 @@ BOOST_AUTO_TEST_CASE(test_alias_resolver_closure) {
         BOOST_CHECK(event == expected);
     }
 }
+
+template<typename T> StateReference<T> increment_param(StateReference<int> val, EventParameters params) {
+    int amount = std::stoi(params["amount"]);
+    *val += amount;
+    return val;
+};
+
+template<typename T> StateReference<T> decrement_param(StateReference<T> val, EventParameters params) {
+    int amount = std::stoi(params["amount"]);
+    *val -= amount;
+    return val;
+};
+
+template<typename T> ParameterizedEventFn<T> base_event_resolver(const EventLabelWithParameters& event_prototype) {
+    if(event_prototype.first == "inc") {
+        return ::increment_param<T>;
+    }
+    else {
+        return ::decrement_param<T>;
+    }
+}
+
+/**
+ * Run a full simulation based on a known control YAML file with known event functions. The simulation is a nested
+ * generator simulation with more than one time point and event aliasing. This test implements a simple runner and
+ * result collector for the simulation.
+ */
+BOOST_AUTO_TEST_CASE(full_simulation_test) {
+    auto control_yaml = read_yaml("full_simulation_test.yaml");
+    AliasResolver alias_resolver = alias_resolver_closure(control_yaml);
+    EventFnResolver<int> event_resolver = parameterized_event_resolver_closure<int>(
+            alias_resolver,
+            ::base_event_resolver<int>);
+    auto events = prepare_simulation<int>(event_resolver, control_yaml["simulation_events"]);
+
+    StateReference<int> initial_state = std::make_shared<int>(0);
+    ResultStates<int> results{initial_state};
+    for(auto time_pair : events) {
+        ResultStates<int> time_point_results;
+        for(auto state : results) {
+            auto next_states = time_pair.second->evaluate_depth(state);
+            time_point_results.insert(time_point_results.end(), next_states.begin(), next_states.end());
+        }
+        results = time_point_results;
+    }
+    BOOST_CHECK(results.size() == 4);
+    BOOST_CHECK(*results[0] == 14);
+    BOOST_CHECK(*results[1] == 8);
+    BOOST_CHECK(*results[2] == 8);
+    BOOST_CHECK(*results[3] == 2);
+}

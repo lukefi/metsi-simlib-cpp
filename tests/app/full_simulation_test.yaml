@@ -1,0 +1,27 @@
+event_parameters:
+  inc:
+    amount: 1
+  dec:
+    amount: 1
+
+event_aliases:
+  inc_two:
+    inc:
+      amount: 2
+
+#starting state 0
+simulation_events:
+  - time_points: [0, 1]
+    generators:
+      - sequence:           # tp 0  ; tp 1
+          - inc             # 1     ; 8, 2
+          - inc_two         # 3     ; 10, 4
+      - alternatives:
+          - inc:
+              amount: 3     # 6     ; 13, 7
+          - sequence:
+              - dec         # 2     ; 9, 3
+              - dec:
+                  amount: 2 # 0     ; 7, 1
+      - sequence:
+          - inc             # 7, 1  ; 14, 8, 8, 2

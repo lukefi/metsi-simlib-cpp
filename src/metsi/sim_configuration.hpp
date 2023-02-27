@@ -6,11 +6,13 @@
 #include <vector>
 #include <set>
 
-EventLabelsWithParameters parse_default_parameters(const YAML::Node& params);
-EventLabelAliases parse_event_aliases(const YAML::Node& params);
-std::set<int> parse_time_points_from_events_structure(const YAML::Node& events_structure);
-std::vector<YAML::Node> find_generator_blocks_for_time(int time_point, const YAML::Node& events_structure);
-std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::Node& events_structure);
+EventLabelsWithParameters parse_default_parameters(const YAML::Node&);
+EventLabelAliases parse_event_aliases(const YAML::Node&);
+std::set<int> parse_time_points_from_events_structure(const YAML::Node&);
+std::vector<YAML::Node> find_generator_blocks_for_time(int, const YAML::Node&);
+std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::Node&);
+
+using AliasResolver = std::function<EventLabelWithParameters(EventLabelWithParameters)>;
 
 template <typename T>
 concept LessThanComparable = requires( T a, T b ) {
@@ -22,7 +24,6 @@ template<LessThanComparable T> std::set<T> sequence_as_set(const YAML::Node& seq
     return {vec.begin(), vec.end()};
 };
 
-std::function<EventLabelWithParameters(EventLabelWithParameters event_prototype)>
-alias_resolver_closure(const YAML::Node&);
+AliasResolver alias_resolver_closure(const YAML::Node& control_yaml);
 
 #endif

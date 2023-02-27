@@ -168,8 +168,7 @@ std::map<int, NestableGeneratorPrototype> parse_simulation_events(const YAML::No
  * @param control_yaml a YAML node with optional event_aliases and optional event_parameters blocks
  * @return an EventLabelWithParameters=>EventLabelWithParameters closure
  */
-std::function<EventLabelWithParameters(EventLabelWithParameters event_prototype)>
-alias_resolver_closure(const YAML::Node& control_yaml) {
+AliasResolver alias_resolver_closure(const YAML::Node& control_yaml) {
     auto default_parameters = parse_default_parameters(control_yaml["event_parameters"]);
     auto event_aliases = parse_event_aliases(control_yaml["event_aliases"]);
     return [default_parameters, event_aliases](const EventLabelWithParameters& event_prototype) {

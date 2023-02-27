@@ -17,7 +17,7 @@
  * @return a T=>T closure capturing the map of domain parameters for event
  */
 template<typename T> EventFn<T> parameterized_event_closure(const ParameterizedEventFn<T>& event, const EventParameters& params) {
-    return [event, params](std::shared_ptr<T> sim_state) { return event(sim_state, params); };
+    return [event, params](StateReference<T> sim_state) { return event(sim_state, params); };
 }
 
 EventLabelWithParameters resolve_event_aliasing(const std::string &event_label, EventLabelsWithParameters default_parameters, EventLabelAliases aliases,

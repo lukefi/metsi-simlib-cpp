@@ -40,7 +40,7 @@ template<typename T> class EventDAG : public std::enable_shared_from_this<EventD
      * Depth-first evaluation of the simulation represented by this graph.
      * @return a vector of simulation states T as given after leaf node event
      */
-    ResultStates<T> evaluate_depth(std::shared_ptr<T>);
+    ResultStates<T> evaluate_depth(StateReference<T>);
 
     /**
      * A static factory for new nodes of an EventDAG graph
@@ -81,7 +81,7 @@ template<typename T> void EventDAG<T>::add_node(EventNode<T> next) {
     this->followers.push_back(next);
 }
 
-template<typename T> ResultStates<T> EventDAG<T>::evaluate_depth(std::shared_ptr<T> sim_state) {
+template<typename T> ResultStates<T> EventDAG<T>::evaluate_depth(StateReference<T> sim_state) {
     ResultStates<T> results;
     auto current = this->event(sim_state);
     if(this->is_leaf()) {

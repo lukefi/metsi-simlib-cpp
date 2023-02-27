@@ -2,7 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include <framework_util.hpp>
 
-std::shared_ptr<int> increment_param(std::shared_ptr<int> val, std::map<std::string, std::string> params) {
+StateReference<int> increment_param(StateReference<int> val, std::map<std::string, std::string> params) {
     int amount = std::stoi(params["amount"]);
     *val += amount;
     return val;
@@ -218,7 +218,7 @@ BOOST_AUTO_TEST_CASE(nested_generator_prototype_with_existing_events) {
 }
 
 BOOST_AUTO_TEST_CASE(graph_constructing_from_nested_generator_prototype) {
-    auto dummy_resolver = [](EventLabelWithParameters _) { return [](std::shared_ptr<int> val) {
+    auto dummy_resolver = [](EventLabelWithParameters _) { return [](StateReference<int> val) {
         *val += 1;
         return val;
     };};

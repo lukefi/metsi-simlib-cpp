@@ -3,7 +3,7 @@
 #include <boost/test/unit_test.hpp>
 #include "event_graph.hpp"
 
-std::shared_ptr<int> event(std::shared_ptr<int> a) {
+StateReference<int> event(StateReference<int> a) {
     *a += 1;
     return a;
 }

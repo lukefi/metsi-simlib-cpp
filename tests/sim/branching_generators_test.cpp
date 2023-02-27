@@ -3,12 +3,12 @@
 #include <set>
 #include "branching_generators.hpp"
 
-std::shared_ptr<int> increment(std::shared_ptr<int> a) {
+StateReference<int> increment(StateReference<int> a) {
     *a += 1;
     return a;
 }
 
-std::shared_ptr<int> decrement(std::shared_ptr<int> a) {
+StateReference<int> decrement(StateReference<int> a) {
     *a -= 1;
     return a;
 }

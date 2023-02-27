@@ -14,12 +14,12 @@ public:
     std::vector<int> memories() { return memory; }
 };
 
-std::shared_ptr<TestExample> increment(std::shared_ptr<TestExample> sim_state) {
+StateReference<TestExample> increment(StateReference<TestExample> sim_state) {
     sim_state->set(sim_state->get() + 1);
     return sim_state;
 };
 
-std::shared_ptr<TestExample> remember(std::shared_ptr<TestExample> sim_state) {
+StateReference<TestExample> remember(StateReference<TestExample> sim_state) {
     sim_state->memorize(sim_state->get());
     return sim_state;
 };

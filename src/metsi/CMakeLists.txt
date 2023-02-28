@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 project(metsi)
 
-find_package(yaml-cpp REQUIRED)
 set(SOURCE_FILES main.cpp sim_configuration.cpp file_io.cpp)
 add_executable(metsi ${SOURCE_FILES})
 include_directories(${SIM_HEADERS_DIR})

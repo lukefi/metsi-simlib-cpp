@@ -3,6 +3,6 @@
 #include <file_io.hpp>
 
 BOOST_AUTO_TEST_CASE(read_yaml_file) {
-    YAML::Node test = read_yaml("test.yaml");
+    YAML::Node test = read_yaml("resources/test.yaml");
     BOOST_CHECK(test.Type() == YAML::NodeType::Map);
 }

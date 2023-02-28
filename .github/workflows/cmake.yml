@@ -21,7 +21,9 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Submodules
-      run: git submodule update --init deps/csv-parser
+      run: |
+        git submodule update --init deps/csv-parser
+        git submodule update --init deps/yaml-cpp
 
     - name: Install dependencies
       run: |

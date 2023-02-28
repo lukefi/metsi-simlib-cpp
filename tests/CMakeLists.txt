@@ -7,12 +7,11 @@ find_package(Lua51 REQUIRED)
 include(CTest)
 include(BoostTestHelpers.cmake)
 
-include_directories(${SIM_HEADERS_DIR})
 include_directories(${METSI_HEADERS_DIR})
 include_directories(${CSV_SINGLE_HEADER_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 
-set(METSI_LIBS metsi-lib yaml-cpp sim)
+set(METSI_LIBS metsi-lib yaml-cpp metsi-simlib)
 
 add_boost_test(sim/event_graph_test.cpp)
 add_boost_test(sim/branching_generators_test.cpp)

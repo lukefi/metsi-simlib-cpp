@@ -11,6 +11,7 @@ set(METSI_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
 set(SIM_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/sim)
 set(METSI_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/metsi)
+set(CSV_SINGLE_HEADER_DIR ${PROJECT_SOURCE_DIR}/deps/csv-parser/single_include)
 
 include_directories(${METSI_INSTALL_INCLUDE_DIR})
 include_directories(${SIM_HEADERS_DIR})
@@ -18,3 +19,4 @@ include_directories(${METSI_HEADERS_DIR})
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(deps/csv-parser EXCLUDE_FROM_ALL)

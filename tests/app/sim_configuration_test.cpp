@@ -4,7 +4,7 @@
 #include <file_io.hpp>
 
 BOOST_AUTO_TEST_CASE(default_parameters_parsing) {
-    YAML::Node content = read_yaml("event_aliasing.yaml");
+    YAML::Node content = read_yaml("resources/event_aliasing.yaml");
     YAML::Node params_node = content["event_parameters"];
     EventLabelsWithParameters default_params = parse_default_parameters(params_node);
     BOOST_CHECK(default_params.contains("base_event") == true);
@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(default_parameters_parsing) {
 }
 
 BOOST_AUTO_TEST_CASE(aliased_events_parsing) {
-    YAML::Node content = read_yaml("event_aliasing.yaml");
+    YAML::Node content = read_yaml("resources/event_aliasing.yaml");
     YAML::Node aliases_node = content["event_aliases"];
     EventLabelAliases event_aliases = parse_event_aliases(aliases_node);
     BOOST_CHECK(event_aliases.size() == 4);
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(unique_set_parsing) {
 }
 
 BOOST_AUTO_TEST_CASE(time_points_parsing) {
-    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    YAML::Node content = read_yaml("resources/simulation_events_non_nested.yaml");
     auto events = content["simulation_events"];
     auto results = parse_time_points_from_events_structure(events);
     std::set<int> expected{0,5,10};
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(time_points_parsing) {
 }
 
 BOOST_AUTO_TEST_CASE(generators_parsing_by_time) {
-    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    YAML::Node content = read_yaml("resources/simulation_events_non_nested.yaml");
     auto events = content["simulation_events"];
     auto time0_generators = find_generator_blocks_for_time(0, events);
     auto time5_generators = find_generator_blocks_for_time(5, events);
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(generators_parsing_by_time) {
 }
 
 BOOST_AUTO_TEST_CASE(generators_parsing_non_nested) {
-    YAML::Node content = read_yaml("simulation_events_non_nested.yaml");
+    YAML::Node content = read_yaml("resources/simulation_events_non_nested.yaml");
     auto events = content["simulation_events"];
     auto results = parse_simulation_events(events);
     BOOST_CHECK(results.size() == 3);
@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(generators_parsing_non_nested) {
 }
 
 BOOST_AUTO_TEST_CASE(generators_parsing_nested) {
-    YAML::Node content = read_yaml("simulation_events_nested.yaml");
+    YAML::Node content = read_yaml("resources/simulation_events_nested.yaml");
     auto events = content["simulation_events"];
     auto results = parse_simulation_events(events);
     auto time5_root = results.at(5);
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(generators_parsing_nested) {
 }
 
 BOOST_AUTO_TEST_CASE(test_alias_resolver_closure) {
-    auto content = read_yaml("event_aliasing.yaml");
+    auto content = read_yaml("resources/event_aliasing.yaml");
     auto resolver = alias_resolver_closure(content);
     auto events_node = content["simulation_events"];
     auto results = parse_simulation_events(events_node);
@@ -225,7 +225,7 @@ template<typename T> ParameterizedEventFn<T> base_event_resolver(const EventLabe
  * result collector for the simulation.
  */
 BOOST_AUTO_TEST_CASE(full_simulation_test) {
-    auto control_yaml = read_yaml("full_simulation_test.yaml");
+    auto control_yaml = read_yaml("resources/full_simulation_test.yaml");
     AliasResolver alias_resolver = alias_resolver_closure(control_yaml);
     EventFnResolver<int> event_resolver = parameterized_event_resolver_closure<int>(
             alias_resolver,

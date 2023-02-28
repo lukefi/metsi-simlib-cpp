@@ -6,7 +6,7 @@
 BOOST_AUTO_TEST_CASE(simple_csv_read) {
     csv::CSVFormat format;
     format.delimiter(',').no_header();
-    csv::CSVReader reader("test.csv", format);
+    csv::CSVReader reader("resources/test.csv", format);
     std::vector<std::string> results;
     for(csv::CSVRow& row : reader) {
         for(csv::CSVField& field : row) {

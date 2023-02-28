@@ -24,50 +24,10 @@ add_boost_test_with_lib(app/sim_configuration_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(app/file_io_test.cpp ${METSI_LIBS})
 add_boost_test(app/csv_parser_test.cpp)
 
+# TODO: need to make this work without specific TARGET..
+# OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources doesn't do anything
 add_custom_command(TARGET yaml_cpp_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/test.yaml
-        $<TARGET_FILE_DIR:yaml_cpp_test>
-        )
-
-add_custom_command(TARGET lua_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/test.lua
-        $<TARGET_FILE_DIR:lua_test>
-        )
-
-add_custom_command(TARGET file_io_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/test.lua
-        $<TARGET_FILE_DIR:file_io_test>
-        )
-
-add_custom_command(TARGET sim_configuration_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/event_aliasing.yaml
-        $<TARGET_FILE_DIR:sim_configuration_test>
-        )
-
-add_custom_command(TARGET sim_configuration_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/simulation_events_non_nested.yaml
-        $<TARGET_FILE_DIR:sim_configuration_test>
-        )
-
-add_custom_command(TARGET sim_configuration_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/simulation_events_nested.yaml
-        $<TARGET_FILE_DIR:sim_configuration_test>
-        )
-
-add_custom_command(TARGET sim_configuration_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/full_simulation_test.yaml
-        $<TARGET_FILE_DIR:sim_configuration_test>
-        )
-
-add_custom_command(TARGET csv_parser_test POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_CURRENT_SOURCE_DIR}/app/test.csv
-        $<TARGET_FILE_DIR:sim_configuration_test>
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/app/resources
+        ${CMAKE_CURRENT_BINARY_DIR}/resources
         )

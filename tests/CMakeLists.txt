@@ -10,6 +10,7 @@ include(BoostTestHelpers.cmake)
 
 include_directories(${SIM_HEADERS_DIR})
 include_directories(${METSI_HEADERS_DIR})
+include_directories(${CSV_SINGLE_HEADER_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 set(METSI_LIBS metsi-lib yaml-cpp)
 
@@ -21,6 +22,7 @@ add_boost_test_with_lib(sim/framework_util_test.cpp sim)
 add_boost_test(sim/class_typed_state_test.cpp)
 add_boost_test_with_lib(app/sim_configuration_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(app/file_io_test.cpp ${METSI_LIBS})
+add_boost_test(app/csv_parser_test.cpp)
 
 add_custom_command(TARGET yaml_cpp_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -61,5 +63,11 @@ add_custom_command(TARGET sim_configuration_test POST_BUILD
 add_custom_command(TARGET sim_configuration_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/app/full_simulation_test.yaml
+        $<TARGET_FILE_DIR:sim_configuration_test>
+        )
+
+add_custom_command(TARGET csv_parser_test POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/app/test.csv
         $<TARGET_FILE_DIR:sim_configuration_test>
         )

@@ -20,6 +20,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Submodules
+      run: git submodule update --init deps/csv-parser
+
     - name: Install dependencies
       run: |
         sudo apt-get update -qq

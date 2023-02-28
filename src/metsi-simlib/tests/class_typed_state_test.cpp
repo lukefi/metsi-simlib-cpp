@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE class_type_event_test
 #include <boost/test/unit_test.hpp>
-#include <branching_generators.hpp>
+#include <metsi-simlib/branching_generators.hpp>
 
 class TestExample {
 private:

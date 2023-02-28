@@ -1,4 +1,4 @@
-#include "framework_util.hpp"
+#include <metsi-simlib/framework_util.hpp>
 
 /***
  * Resolve the base event label and parameters from an environment of default event parameters, event aliases

@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE event_graph
 #include <functional>
 #include <boost/test/unit_test.hpp>
-#include "event_graph.hpp"
+#include <metsi-simlib/event_graph.hpp>
 
 StateReference<int> event(StateReference<int> a) {
     *a += 1;

@@ -1,8 +1,8 @@
 #ifndef SIM_CONFIGURATION_HPP
 #define SIM_CONFIGURATION_HPP
 #include <yaml-cpp/yaml.h>
-#include <core_types.hpp>
-#include <framework_util.hpp>
+#include <metsi-simlib/core_types.hpp>
+#include <metsi-simlib/framework_util.hpp>
 #include <vector>
 #include <set>
 

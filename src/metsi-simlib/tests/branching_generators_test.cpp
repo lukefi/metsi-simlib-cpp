@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE branching_generators
 #include <boost/test/unit_test.hpp>
 #include <set>
-#include "branching_generators.hpp"
+#include <metsi-simlib/branching_generators.hpp>
 
 StateReference<int> increment(StateReference<int> a) {
     *a += 1;

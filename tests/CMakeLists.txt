@@ -12,13 +12,9 @@ include_directories(${LUA_INCLUDE_DIR})
 
 set(METSI_LIBS metsi-applib yaml-cpp metsi-simlib)
 
-add_boost_test(sim/event_graph_test.cpp)
-add_boost_test(sim/branching_generators_test.cpp)
-add_boost_test(sim/class_typed_state_test.cpp)
 add_boost_test(app/csv_parser_test.cpp)
 add_boost_test_with_lib(app/lua_test.cpp luajit-5.1)
 add_boost_test_with_lib(app/yaml_cpp_test.cpp ${METSI_LIBS})
-add_boost_test_with_lib(sim/framework_util_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(app/sim_configuration_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(app/file_io_test.cpp ${METSI_LIBS})
 

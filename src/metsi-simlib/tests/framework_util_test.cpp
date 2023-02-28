@@ -1,6 +1,6 @@
 #define BOOST_TEST_MODULE framework_util
 #include <boost/test/unit_test.hpp>
-#include <framework_util.hpp>
+#include <metsi-simlib/framework_util.hpp>
 
 StateReference<int> increment_param(StateReference<int> val, std::map<std::string, std::string> params) {
     int amount = std::stoi(params["amount"]);

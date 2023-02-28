@@ -11,5 +11,4 @@ target_link_libraries(metsi-applib metsi-simlib yaml-cpp)
 add_executable(metsi ${SOURCE_FILES})
 target_link_libraries(metsi metsi-applib metsi-simlib yaml-cpp)
 
-install(TARGETS metsi DESTINATION ${METSI_INSTALL_BIN_DIR})
-install(FILES file_io.hpp sim_configuration.hpp DESTINATION ${METSI_INSTALL_INCLUDE_DIR})
+install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)

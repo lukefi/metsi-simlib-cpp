@@ -34,40 +34,56 @@ protected:
 public:
     explicit OverlaidObject(std::shared_ptr<T>);
     explicit OverlaidObject(std::shared_ptr<OverlaidObject<T>>);
-    template<ValueType U> U get(const std::string& name) const;
-    template<ValueType U> void set(std::pair<std::string, U>);
+    template<ValueType U> U get(const std::string&) const;
+    const boost::any& operator[](std::string) const;
+    template<ValueType U> void set(std::pair<std::string, U>) const;
     void set_immutable() { immutable = true; }
 };
 
 /**
- * Get U type value for given name key from this object, or recurse into previous OverlaidObject if not found.
- * Ultimately recurses into a prototype object of type T
+ * Wrapper for OverlaidObject<T>::operator[] to find a boost::any container for the given key. Utilizes
+ * boost::any_cast<U>() to obtain the contained type U property value. Throws boost::bad_any_cast error upon value not
+ * being castable to type U.
  *
  * @tparam T an AnyStore template type
- * @tparam U scalar type contained by boost::any
- * @param name key name for a stored value
+ * @tparam U a ValueType template type contained by boost::any
+ * @param key key name for a stored property
  * @return a scalar value obtainable from boost::any
+ * @throws boost::bad_any_cast if value not castable to type U
  */
-template<AnyStore T> template<ValueType U> U OverlaidObject<T>::get(const std::string& name) const {
-    if(values.contains(name)) {
-        return boost::any_cast<U>(values.at(name));
+template<AnyStore T> template<ValueType U> U OverlaidObject<T>::get(const std::string& key) const {
+    return boost::any_cast<U>((*this)[key]);
+}
+
+/**
+ * Get a boost::any container for a given property. Search the property storage of this instance. Recurse into previous
+ * OverlaidObject if not found. Ultimately recurses into a prototype object of type T. Throws std::out_of_range error
+ * if property not found.
+ *
+ * @tparam T an AnyStore template type
+ * @param key key name for a stored property
+ * @return a boost::any container for the value of a stored property
+ * @throws std::out_of_range if property not found.
+ */
+template<AnyStore T> const boost::any& OverlaidObject<T>::operator[](std::string key) const {
+    const boost::any* retval = nullptr;
+    if(values.contains(key)) {
+        retval = &values[key];
     }
     else if(previous) {
         OverlaidObject<T>* prev = previous.value().get();
-        return prev->get<U>(name);
+        retval = &(*prev)[key];
     }
     else if(prototype) {
         T* proto = prototype.value().get();
-        try {
-            U value = boost::any_cast<U>((*proto)[name]);
-            return value;
-        }
-        catch(boost::bad_any_cast&) {
-            throw std::out_of_range("No value exists for parameter " + name);
-        }
+        retval = &(*proto)[key];
+    }
+
+    if(!retval || retval->empty()) {
+        throw std::out_of_range("No value exists for parameter " + key);
     }
     else {
-        return boost::any_cast<U>(values[name]);
+        return *retval;
     }
 }
 
@@ -96,12 +112,12 @@ template<AnyStore T> OverlaidObject<T>::OverlaidObject(std::shared_ptr<OverlaidO
  * Attempt to set given key-value pair to this OverlaidObject's store. Succeeds if this instance had not been set as
  * immutable.
  *
- * @throws std::domain_error upon attempting to set values on such OverlaidObject instances which are already a previous layer for other objects.
  * @tparam T an AnyStore template type
- * @tparam U scalar ValueType template type contained by boost::any
+ * @tparam U a ValueType template type contained by boost::any
  * @param kv key-value pair
+ * @throws std::domain_error upon attempting to set values on such OverlaidObject instances which are already a previous layer for other objects.
  */
-template<AnyStore T> template<ValueType U> void OverlaidObject<T>::set(std::pair<std::string, U> kv) {
+template<AnyStore T> template<ValueType U> void OverlaidObject<T>::set(std::pair<std::string, U> kv) const {
     if(immutable) {
         throw(std::domain_error("Attempted to mutate a locked overlay layer with key " + kv.first));
     }

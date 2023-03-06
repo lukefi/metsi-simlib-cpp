@@ -32,6 +32,7 @@ add_boost_test_with_lib(tests/lua_test.cpp luajit-5.1)
 add_boost_test_with_lib(tests/yaml_cpp_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(tests/sim_configuration_test.cpp ${METSI_LIBS})
 add_boost_test_with_lib(tests/file_io_test.cpp ${METSI_LIBS})
+add_boost_test_with_lib(tests/state_model_test.cpp ${METSI_LIBS})
 
 # TODO: need to make this work without specific TARGET..
 # OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources doesn't do anything

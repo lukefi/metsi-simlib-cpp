@@ -38,6 +38,7 @@ public:
     const boost::any& operator[](std::string) const;
     template<ValueType U> void set(std::pair<std::string, U>) const;
     void set_immutable() { immutable = true; }
+    static std::shared_ptr<OverlaidObject<T>> create(std::shared_ptr<T>);
 };
 
 /**
@@ -122,6 +123,10 @@ template<AnyStore T> template<ValueType U> void OverlaidObject<T>::set(std::pair
         throw(std::domain_error("Attempted to mutate a locked overlay layer with key " + kv.first));
     }
     values.insert(kv);
+}
+
+template<AnyStore T> std::shared_ptr<OverlaidObject<T>> OverlaidObject<T>::create(std::shared_ptr<T> prototype) {
+    return std::make_shared<OverlaidObject<T>>(prototype);
 }
 
 #endif

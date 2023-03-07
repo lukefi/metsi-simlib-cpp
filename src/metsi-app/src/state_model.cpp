@@ -54,3 +54,9 @@ const TreeStratum &ForestStand::create_stratum(const Properties& props) {
     strata.emplace_back(props);
     return strata.back();
 }
+
+SimulationState::SimulationState(const ForestStand& stand): stand(stand) {}
+
+SimulationState::SimulationState(const SimulationState& previous) {
+    this->stand = ForestStand(previous.stand);
+}

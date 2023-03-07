@@ -100,4 +100,11 @@ public:
     const TreeStratum& create_stratum(const Properties& = {});
 };
 
+class SimulationState {
+    ForestStand stand;
+public:
+    explicit SimulationState(const ForestStand&);
+    SimulationState(const SimulationState&);
+};
+
 #endif

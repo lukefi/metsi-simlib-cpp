@@ -32,7 +32,7 @@ WithOverlay::WithOverlay(const WithOverlay& previous) {
  * @param key
  * @return
  */
-const boost::any& WithOverlay::operator [](const std::string& key) const {
+const std::string& WithOverlay::operator [](const std::string& key) const {
         return (*overlay)[key];
 }
 

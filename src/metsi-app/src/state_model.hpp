@@ -1,11 +1,10 @@
 #ifndef STATE_MODEL_HPP
 #define STATE_MODEL_HPP
-#include <boost/any.hpp>
 #include <map>
 #include <memory>
 #include "overlaid_object.hpp"
 
-using Properties = std::map<std::string, boost::any>;
+using Properties = std::map<std::string, std::string>;
 
 /**
  * OverlaidObject<Properties> wrapper superclass for domain entities.
@@ -17,7 +16,7 @@ public:
     WithOverlay();
     explicit WithOverlay(const Properties&);
     WithOverlay(const WithOverlay&);
-    const boost::any& operator [](const std::string&) const;
+    const std::string& operator [](const std::string&) const;
     template<typename U> void set(const std::string&, U) const;
     template<typename U> U get(const std::string&) const;
 };
@@ -30,7 +29,7 @@ public:
  * @return property value
  */
 template<typename U> void WithOverlay::set(const std::string& key, U value) const {
-    overlay->set<U>({key, value});
+    overlay->set<U>(key, value);
 }
 
 /**

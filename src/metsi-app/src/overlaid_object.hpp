@@ -1,75 +1,70 @@
 #ifndef OVERLAID_OBJECT_HPP
 #define OVERLAID_OBJECT_HPP
-#include <boost/any.hpp>
+#include <boost/lexical_cast.hpp>
 #include <functional>
 #include <optional>
 #include <map>
 #include <memory>
+#include <string>
 
 /**
  * Concept for a type being array subscriptable i.e. usable with [] operator to resolve std::string parameter names
- * into boost::any values.
+ * into std::string values.
  */
 template<typename T>
 concept AnyStore = requires(T a, std::string k) {
-    { a[k] } -> std::convertible_to<boost::any>;
+    { a[k] } -> std::convertible_to<std::string>;
 };
 
 /**
- * Concept for a type being copy constructible to conform with boost::any ValueType description.
- */
-template<typename T>
-concept ValueType = std::copy_constructible<T>;
-
-/**
  * Overlay for an AnyStore prototype. Instances of OverlaidObject<T> form a stack of layers. These layers shadow
- * {std::string,boost::any} mappings from previous layers or expand upon them. Layers ultimately resolve into a
+ * {std::string,std::string} mappings from previous layers or expand upon them. Layers ultimately resolve into a
  * prototype AnyStore serving as the base truth for mappings.
  * @tparam T an AnyStore type
  */
 template<AnyStore T> class OverlaidObject {
     std::optional<std::shared_ptr<T>> prototype{std::nullopt};
-    mutable std::map<std::string, boost::any> values;
+    mutable std::map<std::string, std::string> values;
     std::optional<std::shared_ptr<OverlaidObject<T>>> previous{std::nullopt};
     bool immutable = false;
 protected:
 public:
     explicit OverlaidObject(std::shared_ptr<T>);
     explicit OverlaidObject(std::shared_ptr<OverlaidObject<T>>);
-    template<ValueType U> U get(const std::string&) const;
-    const boost::any& operator[](std::string) const;
-    template<ValueType U> void set(std::pair<std::string, U>) const;
+    template<typename U> U get(const std::string&) const;
+    const std::string& operator[](std::string) const;
+    template<typename U> void set(std::string, U) const;
     void set_immutable() { immutable = true; }
     static std::shared_ptr<OverlaidObject<T>> create(std::shared_ptr<T>);
 };
 
 /**
- * Wrapper for OverlaidObject<T>::operator[] to find a boost::any container for the given key. Utilizes
- * boost::any_cast<U>() to obtain the contained type U property value. Throws boost::bad_any_cast error upon value not
- * being castable to type U.
+ * Wrapper for OverlaidObject<T>::operator[] to find the value for the given key. Utilizes
+ * boost::lexical_cast<U>() to obtain the contained type U property value. Throws boost::bad_lexical_cast error upon
+ * value not being convertible to type U.
  *
  * @tparam T an AnyStore template type
- * @tparam U a ValueType template type contained by boost::any
+ * @tparam U a type conversible from property value string
  * @param key key name for a stored property
- * @return a scalar value obtainable from boost::any
- * @throws boost::bad_any_cast if value not castable to type U
+ * @return a scalar value obtainable from std::string
+ * @throws boost::bad_lexical_cast if value not castable to type U
  */
-template<AnyStore T> template<ValueType U> U OverlaidObject<T>::get(const std::string& key) const {
-    return boost::any_cast<U>((*this)[key]);
+template<AnyStore T> template<typename U> U OverlaidObject<T>::get(const std::string& key) const {
+    return boost::lexical_cast<U>((*this)[key]);
 }
 
 /**
- * Get a boost::any container for a given property. Search the property storage of this instance. Recurse into previous
+ * Get the string value for a given property. Search the property storage of this instance. Recurse into previous
  * OverlaidObject if not found. Ultimately recurses into a prototype object of type T. Throws std::out_of_range error
  * if property not found.
  *
  * @tparam T an AnyStore template type
  * @param key key name for a stored property
- * @return a boost::any container for the value of a stored property
+ * @return the string value of a stored property
  * @throws std::out_of_range if property not found.
  */
-template<AnyStore T> const boost::any& OverlaidObject<T>::operator[](std::string key) const {
-    const boost::any* retval = nullptr;
+template<AnyStore T> const std::string& OverlaidObject<T>::operator[](std::string key) const {
+    const std::string* retval = nullptr;
     if(values.contains(key)) {
         retval = &values[key];
     }
@@ -116,15 +111,17 @@ template<AnyStore T> OverlaidObject<T>::OverlaidObject(std::shared_ptr<OverlaidO
  * immutable.
  *
  * @tparam T an AnyStore template type
- * @tparam U a ValueType template type contained by boost::any
- * @param kv key-value pair
+ * @tparam U a value type convertible to string
+ * @param key property name
+ * @param value property value
  * @throws std::domain_error upon attempting to set values on such OverlaidObject instances which are already a previous layer for other objects.
+ * @throws boost::bad_lexical_cast upon U value not being conversible to string
  */
-template<AnyStore T> template<ValueType U> void OverlaidObject<T>::set(std::pair<std::string, U> kv) const {
+template<AnyStore T> template<typename U> void OverlaidObject<T>::set(std::string key, U value) const {
     if(immutable) {
-        throw(std::domain_error("Attempted to mutate a locked overlay layer with key " + kv.first));
+        throw(std::domain_error("Attempted to mutate a locked overlay layer with key " + key));
     }
-    values.insert(kv);
+    values.insert(std::make_pair(key, boost::lexical_cast<std::string>(value)));
 }
 
 template<AnyStore T> std::shared_ptr<OverlaidObject<T>> OverlaidObject<T>::create(std::shared_ptr<T> prototype) {

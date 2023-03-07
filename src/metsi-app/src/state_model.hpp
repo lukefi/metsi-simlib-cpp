@@ -1,7 +1,9 @@
 #ifndef STATE_MODEL_HPP
 #define STATE_MODEL_HPP
 #include <boost/any.hpp>
-#include <overlaid_object.hpp>
+#include <map>
+#include <memory>
+#include "overlaid_object.hpp"
 
 using Properties = std::map<std::string, boost::any>;
 

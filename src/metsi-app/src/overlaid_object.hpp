@@ -3,6 +3,8 @@
 #include <boost/any.hpp>
 #include <functional>
 #include <optional>
+#include <map>
+#include <memory>
 
 /**
  * Concept for a type being array subscriptable i.e. usable with [] operator to resolve std::string parameter names

@@ -45,7 +45,12 @@ ForestStand::ForestStand(const ForestStand& previous) : WithOverlay(previous) {
     this->trees = std::vector<ReferenceTree>(previous.trees);
 }
 
-const ReferenceTree& ForestStand::create_tree() {
-    trees.emplace_back();
+const ReferenceTree& ForestStand::create_tree(const Properties& props) {
+    trees.emplace_back(props);
     return trees.back();
+}
+
+const TreeStratum &ForestStand::create_stratum(const Properties& props) {
+    strata.emplace_back(props);
+    return strata.back();
 }

@@ -13,8 +13,8 @@ BOOST_AUTO_TEST_CASE(simple_csv_read) {
             results.emplace_back(field.get<std::string>());
         }
     }
-    std::vector<std::string> expected{"one", "two", "three", "1", "2", "3"};
+    std::vector<std::string> expected{"one", "two", "three", "1", "2", "3", "", ""};
 
-    BOOST_CHECK(results.size() == 6);
+    BOOST_CHECK(results.size() == 8);
     BOOST_CHECK(results == expected);
 }

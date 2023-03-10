@@ -44,3 +44,14 @@ add_custom_command(TARGET yaml_cpp_test POST_BUILD
         ${CMAKE_CURRENT_BINARY_DIR}/resources
         )
 
+add_custom_command(TARGET metsi POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources/forest_data.csv
+        ${CMAKE_CURRENT_BINARY_DIR}/
+        )
+
+add_custom_command(TARGET metsi POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources/control.yaml
+        ${CMAKE_CURRENT_BINARY_DIR}/
+        )

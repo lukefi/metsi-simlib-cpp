@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 project(metsi-app)
 
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Lua51 REQUIRED)
 
 set(LIB_SOURCE_FILES src/sim_configuration.cpp src/file_io.cpp src/state_model.cpp src/app_io.cpp)
@@ -30,6 +30,7 @@ include_directories(${YAML_CPP_HEADER_DIR})
 add_boost_test(tests/csv_parser_test.cpp)
 add_boost_test(tests/overlaid_object_test.cpp)
 add_boost_test_with_lib(tests/lua_test.cpp luajit-5.1)
+add_boost_test_with_lib(tests/app_io_test.cpp ${METSI_ALL_DEPS})
 add_boost_test_with_lib(tests/yaml_cpp_test.cpp ${METSI_ALL_DEPS})
 add_boost_test_with_lib(tests/sim_configuration_test.cpp ${METSI_ALL_DEPS})
 add_boost_test_with_lib(tests/file_io_test.cpp ${METSI_ALL_DEPS})

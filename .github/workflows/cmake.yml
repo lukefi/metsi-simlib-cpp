@@ -24,14 +24,15 @@ jobs:
       run: |
         git submodule update --init deps/csv-parser
         git submodule update --init deps/yaml-cpp
+        git submodule update --init deps/vcpkg
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update -qq
-        sudo apt-get install libboost-test-dev
-        sudo apt-get install libboost-program-options-dev
-        sudo apt-get install libluajit-5.1-dev
-        sudo apt-get install liblua5.1-dev
+    - name: Setup vcpkg env
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgDirectory: '${{ github.workspace }}/deps/vcpkg'
+        vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
+        runVcpkgInstall: true
+
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type

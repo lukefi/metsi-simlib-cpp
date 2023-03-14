@@ -54,14 +54,14 @@ template<typename T> EventFnResolver<T> parameterized_event_resolver_closure(
  *
  * @tparam T Simulation state type
  * @param event_resolver a function for obtaining an EventFn<T> function for a given EventLabelWithParameters
- * @param control_yaml a YAML source with simulation_events, event_aliases and event_parameters blocks
+ * @param simulation_events a YAML source with simulation_events, event_aliases and event_parameters blocks
  * @return a mapping of simulation time points to a root event graph node for that time point
  */
 template<typename T> std::map<int, EventNode<T>> prepare_simulation(
         EventFnResolver<T> event_resolver,
-        const YAML::Node& control_yaml
+        const YAML::Node& simulation_events
         ) {
-    auto generator_prototypes = parse_simulation_events(control_yaml);
+    auto generator_prototypes = parse_simulation_events(simulation_events);
     std::map<int, EventNode<T>> retval;
     EventFn<T> no_op = [](StateReference<T> state) { return state; };
     for(auto pair : generator_prototypes) {

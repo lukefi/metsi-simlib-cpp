@@ -15,10 +15,9 @@ simulation_events:
           - grow_one_year
   - time_points: [2021]
     generators:
-      - alternatives:
+      - sequence:
           - grow:
               step: 4
-          - rest
   - time_points: [2025, 2030]
     generators:
       - sequence:

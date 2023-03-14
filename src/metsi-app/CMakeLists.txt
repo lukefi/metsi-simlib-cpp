@@ -17,6 +17,7 @@ add_executable(metsi ${SOURCE_FILES})
 target_link_libraries(metsi ${METSI_ALL_DEPS})
 
 install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX}/share/metsi)
 
 include_directories(src)
 include(CTest)

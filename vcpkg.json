@@ -1,0 +1,5 @@
+{
+  "name": "metsi",
+  "version": "1.0.0",
+  "dependencies": [ "boost-test", "boost-program-options", "boost-lexical-cast", "luajit" ]
+}

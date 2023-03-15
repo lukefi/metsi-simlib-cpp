@@ -1,7 +1,8 @@
-build
+build*
 cmake-build-*
 target
 .vscode
 .idea
 *.autosave
 CMakeLists.txt.user
+CMakeUserPresets.json

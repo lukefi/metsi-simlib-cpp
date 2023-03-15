@@ -14,7 +14,7 @@ install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-include_directories(include)
+include_directories(include ${Boost_INCLUDE_DIR})
 include(CTest)
 include(BoostTestHelpers.cmake)
 

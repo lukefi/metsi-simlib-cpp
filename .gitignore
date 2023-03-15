@@ -2,6 +2,7 @@ build*
 cmake-build-*
 target
 .vscode
+.vs
 .idea
 *.autosave
 CMakeLists.txt.user

@@ -13,4 +13,3 @@ set(CSV_SINGLE_HEADER_DIR ${PROJECT_SOURCE_DIR}/deps/csv-parser/single_include)
 
 add_subdirectory(src/metsi-app)
 add_subdirectory(src/metsi-simlib)
-add_subdirectory(deps/csv-parser EXCLUDE_FROM_ALL)

@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE csv_parser_test
 #include <boost/test/unit_test.hpp>
-#include <csv.hpp>
 #include <vector>
+#include "csv_parser.hpp"
 
 BOOST_AUTO_TEST_CASE(simple_csv_read) {
     csv::CSVFormat format;

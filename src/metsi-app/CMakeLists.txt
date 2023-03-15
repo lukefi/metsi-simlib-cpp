@@ -27,10 +27,8 @@ find_package(Boost 1.81.0 COMPONENTS unit_test_framework REQUIRED)
 include(CTest)
 include(BoostTestHelpers.cmake)
 
-include_directories(${CSV_SINGLE_HEADER_DIR})
 #include_directories(${LUA_INCLUDE_DIR})
 include_directories(${METSI_SIMLIB_INCLUDE_DIR})
-include_directories(${YAML_CPP_HEADER_DIR})
 
 add_boost_test(tests/csv_parser_test.cpp)
 add_boost_test(tests/overlaid_object_test.cpp)

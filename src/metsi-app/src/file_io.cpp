@@ -1,6 +1,5 @@
 #include "file_io.hpp"
 #include "state_model.hpp"
-#include <csv.hpp>
 
 YAML::Node read_yaml(const std::string& file_path) {
     return YAML::LoadFile(file_path);

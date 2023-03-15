@@ -46,17 +46,17 @@ add_boost_test_with_lib(tests/state_model_test.cpp ${METSI_ALL_DEPS})
 add_custom_command(TARGET yaml_cpp_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/resources
-        ${CMAKE_CURRENT_BINARY_DIR}/resources
+        $<TARGET_FILE_DIR:yaml_cpp_test>/resources
         )
 
 add_custom_command(TARGET metsi POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/resources/forest_data.csv
-        ${CMAKE_CURRENT_BINARY_DIR}/
+        $<TARGET_FILE_DIR:metsi>/
         )
 
 add_custom_command(TARGET metsi POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/resources/control.yaml
-        ${CMAKE_CURRENT_BINARY_DIR}/
+        $<TARGET_FILE_DIR:metsi>/
         )

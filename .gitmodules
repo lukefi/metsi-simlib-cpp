@@ -1,9 +1,6 @@
 [submodule "deps/csv-parser"]
 	path = deps/csv-parser
 	url = https://github.com/vincentlaucsb/csv-parser
-[submodule "deps/yaml-cpp"]
-	path = deps/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp
 [submodule "deps/vcpkg"]
 	path = deps/vcpkg
 	url = https://github.com/microsoft/vcpkg

@@ -3,6 +3,7 @@ project(metsi-app)
 
 #find_package(PkgConfig REQUIRED)
 find_package(Boost 1.81.0 COMPONENTS program_options REQUIRED)
+find_package(yaml-cpp 0.7.0 REQUIRED)
 #pkg_check_modules(LuaJIT REQUIRED luajit)
 include_directories(${Boost_INCLUDE_DIR})
 

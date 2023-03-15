@@ -19,7 +19,6 @@ jobs:
     - name: Submodules
       run: |
         git submodule update --init deps/csv-parser
-        git submodule update --init deps/yaml-cpp
         git submodule update --init deps/vcpkg
 
     - name: Setup vcpkg env

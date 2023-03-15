@@ -7,7 +7,7 @@ set(INCLUDE_FILES
         include/metsi-simlib/branching_generators.hpp
         include/metsi-simlib/framework_util.hpp
         include/metsi-simlib/core_types.hpp)
-add_library(metsi-simlib SHARED ${SOURCE_FILES})
+add_library(metsi-simlib STATIC ${SOURCE_FILES})
 
 install(TARGETS metsi-simlib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})

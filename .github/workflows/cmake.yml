@@ -69,7 +69,7 @@ jobs:
         run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.WINDOWS_PRESET}}
 
       - name: CMake build
-        run: cmake --build --preset ${{env.WINDOWS_PRESET}}
+        run: cmake --build --preset ${{env.WINDOWS_PRESET}} --config Release
 
       - name: metsi-simlib unit tests
         run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib/Release --output-on-failure
@@ -78,7 +78,7 @@ jobs:
         run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app/Release --output-on-failure
 
       - name: CMake install
-        run: cmake --install builds/${{env.WINDOWS_PRESET}}
+        run: cmake --install builds/${{env.WINDOWS_PRESET}} --config Release
 
       - uses: actions/upload-artifact@v3
         with:

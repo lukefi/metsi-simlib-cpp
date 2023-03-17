@@ -72,10 +72,6 @@
       "displayName": "MSBuild debug configure",
       "description": "MSBuild debug configure",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Debug"
-        },
         "CMAKE_CXX_FLAGS": {
           "type": "STRING",
           "value": "-EHsc"
@@ -88,10 +84,6 @@
       "displayName": "MSBuild release configure",
       "description": "MSBuild release configure",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        },
         "CMAKE_CXX_FLAGS": {
           "type": "STRING",
           "value": "-EHsc -Ox"

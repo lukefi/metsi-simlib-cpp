@@ -22,7 +22,7 @@ jobs:
       - uses: lukka/get-cmake@latest
 
       - name: Setup vcpkg env
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v10.7
         with:
           vcpkgDirectory: ${{github.workspace}}/deps/vcpkg
           vcpkgJsonGlob: ${{github.workspace}}/vcpkg.json
@@ -59,10 +59,10 @@ jobs:
       - uses: lukka/get-cmake@latest
 
       - name: Setup vcpkg env
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v10.7
         with:
-          vcpkgDirectory: ${{github.workspace}}/deps/vcpkg
-          vcpkgJsonGlob: ${{github.workspace}}/vcpkg.json
+          vcpkgDirectory: deps/vcpkg
+          vcpkgJsonGlob: '**/vcpkg.json'
           runVcpkgInstall: true
 
       - name: CMake configure

@@ -9,9 +9,6 @@ set(INCLUDE_FILES
         include/metsi-simlib/core_types.hpp)
 add_library(metsi-simlib STATIC ${SOURCE_FILES})
 
-install(TARGETS metsi-simlib DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
-
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 include_directories(include ${Boost_INCLUDE_DIR})

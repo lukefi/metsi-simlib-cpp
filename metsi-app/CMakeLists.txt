@@ -19,8 +19,8 @@ target_link_libraries(metsi-applib ${METSI_EXTERNAL_DEPS})
 add_executable(metsi ${SOURCE_FILES})
 target_link_libraries(metsi ${METSI_ALL_DEPS})
 
-install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX}/share/metsi)
+install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 include_directories(src)
 find_package(Boost 1.81.0 COMPONENTS unit_test_framework REQUIRED)

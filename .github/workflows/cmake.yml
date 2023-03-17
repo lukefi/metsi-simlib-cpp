@@ -7,7 +7,8 @@ on:
     branches: [ "main" ]
 
 env:
-  TEST_RUN_TARGET: ninja-release
+  LINUX_PRESET: ninja-release
+  WINDOWS_PRESET: msbuild-release
 
 jobs:
   build-linux:
@@ -28,19 +29,56 @@ jobs:
           runVcpkgInstall: true
 
       - name: CMake configure
-        run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.TEST_RUN_TARGET}}
+        run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.LINUX_PRESET}}
 
       - name: CMake build
-        run: cmake --build builds/${{env.TEST_RUN_TARGET}}
+        run: cmake --build builds/${{env.LINUX_PRESET}}
 
       - name: metsi-simlib unit tests
-        run: ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/metsi-simlib --output-on-failure
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.LINUX_PRESET}}/metsi-simlib --output-on-failure
 
       - name: metsi-app unit tests
-        run: ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/metsi-app --output-on-failure
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.LINUX_PRESET}}/metsi-app --output-on-failure
 
       - name: CMake install
-        run: cmake --install builds/${{env.TEST_RUN_TARGET}}
+        run: cmake --install builds/${{env.LINUX_PRESET}}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: metsi-${{runner.os}}
+          path: ${{github.workspace}}/${{runner.os}}-installprefix/*
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Submodules
+        run: git submodule update --init deps/vcpkg
+
+      - uses: lukka/get-cmake@latest
+
+      - name: Setup vcpkg env
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: ${{github.workspace}}/deps/vcpkg
+          vcpkgJsonGlob: ${{github.workspace}}/vcpkg.json
+          runVcpkgInstall: true
+
+      - name: CMake configure
+        run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.WINDOWS_PRESET}}
+
+      - name: CMake build
+        run: cmake --build builds/${{env.WINDOWS_PRESET}}
+
+      - name: metsi-simlib unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib --output-on-failure
+
+      - name: metsi-app unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app --output-on-failure
+
+      - name: CMake install
+        run: cmake --install builds/${{env.WINDOWS_PRESET}}
 
       - uses: actions/upload-artifact@v3
         with:

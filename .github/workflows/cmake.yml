@@ -32,7 +32,7 @@ jobs:
         run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.LINUX_PRESET}}
 
       - name: CMake build
-        run: cmake --build builds/${{env.LINUX_PRESET}}
+        run: cmake --build --preset {{env.LINUX_PRESET}}
 
       - name: metsi-simlib unit tests
         run: ctest --test-dir ${{github.workspace}}/builds/${{env.LINUX_PRESET}}/metsi-simlib --output-on-failure
@@ -69,7 +69,7 @@ jobs:
         run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.WINDOWS_PRESET}}
 
       - name: CMake build
-        run: cmake --build builds/${{env.WINDOWS_PRESET}}
+        run: cmake --build --preset {{env.WINDOWS_PRESET}}
 
       - name: metsi-simlib unit tests
         run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib --output-on-failure

@@ -10,9 +10,8 @@ env:
   TEST_RUN_TARGET: ninja-release
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
@@ -39,10 +38,26 @@ jobs:
         configurePreset: '${{env.TEST_RUN_TARGET}}'
         buildPreset: '${{env.TEST_RUN_TARGET}}'
 
+    - name: Build cache save
+      uses: actions/cache/save@v3
+      id: metsi-build-cache-save
+      with:
+        path: 'builds/${{ env.TEST_RUN_TARGET }}'
+        key: '${{ runner.os }}-builds-${{ env.TEST_RUN_TARGET }}'
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build-linux
+    steps:
+    - name: Restore build cache
+      uses: actions/cache/restore@v3
+      id: metsi-build-cache-restore
+      with:
+        path: 'builds/${{ env.TEST_RUN_TARGET }}'
+        key: '${{ runner.os }}-builds-${{ env.TEST_RUN_TARGET }}'
+
     - name: metsi-simlib unit tests
       run: ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/metsi-simlib --output-on-failure
 
     - name: metsi-app unit tests
       run: ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/metsi-app --output-on-failure
-
-

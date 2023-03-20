@@ -78,7 +78,10 @@ jobs:
         run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app/Release --output-on-failure
 
       - name: CMake install
-        run: cmake --install builds/${{env.WINDOWS_PRESET}} --config Release
+        run: |
+          cmake --install builds/${{env.WINDOWS_PRESET}} --config Release
+          cp builds/${{env.WINDOWS_PRESET}}/metsi-app/Release/boost_program_options-vc143-mt-x64-1_81.dll ${{github.workspace}}/${{runner.os}}-installprefix/
+          cp builds/${{env.WINDOWS_PRESET}}/metsi-app/Release/yaml-cpp.dll ${{github.workspace}}/${{runner.os}}-installprefix/
 
       - uses: actions/upload-artifact@v3
         with:

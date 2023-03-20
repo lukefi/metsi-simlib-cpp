@@ -6,7 +6,7 @@
 #include <tuple>
 
 BOOST_AUTO_TEST_CASE(yaml_file_load) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     BOOST_CHECK(test.Type() == YAML::NodeType::Map);
 
     YAML::Node obj = test["object"];
@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_CASE(yaml_file_load) {
 }
 
 BOOST_AUTO_TEST_CASE(yaml_elementary_types) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     YAML::Node obj = test["object"];
 
     auto integer = obj["integer"].as<int>();
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(yaml_elementary_types) {
 }
 
 BOOST_AUTO_TEST_CASE(yaml_list) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     YAML::Node obj = test["object"];
 
     // [1, 2, 3]
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(yaml_list) {
 }
 
 BOOST_AUTO_TEST_CASE(yaml_mixed_type_list) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     YAML::Node obj = test["object"];
 
     // [1, 2, three]
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(yaml_mixed_type_list) {
 }
 
 BOOST_AUTO_TEST_CASE(yaml_mixed_type_list_nested_object) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     YAML::Node obj = test["object"];
 
     // {nested: [one, two, {three: [four, five]}]}
@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(yaml_mixed_type_list_nested_object) {
 }
 
 BOOST_AUTO_TEST_CASE(direct_map_transformation) {
-    YAML::Node test = YAML::LoadFile("resources/test.yaml");
+    YAML::Node test = YAML::LoadFile("test_resources/test.yaml");
     auto result = test["just_map"].as<std::map<std::string, std::string>>();
     BOOST_CHECK(result.size() == 2);
     BOOST_CHECK(result["abc"] == "1");

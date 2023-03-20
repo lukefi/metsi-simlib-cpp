@@ -72,10 +72,10 @@ jobs:
         run: cmake --build --preset ${{env.WINDOWS_PRESET}} --config Release
 
       - name: metsi-simlib unit tests
-        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib/Release --output-on-failure
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib -C Release --output-on-failure
 
       - name: metsi-app unit tests
-        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app/Release --output-on-failure
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app -C Release --output-on-failure
 
       - name: CMake install
         run: |

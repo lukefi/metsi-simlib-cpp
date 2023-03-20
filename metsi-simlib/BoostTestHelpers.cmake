@@ -14,7 +14,8 @@ function(add_boost_test SOURCE_FILE_NAME)
 
         add_test(NAME "${TEST_EXECUTABLE_NAME}.${TEST_NAME}" 
                  COMMAND ${TEST_EXECUTABLE_NAME}
-                 --run_test=${TEST_NAME} --catch_system_error=yes)
+                 --run_test=${TEST_NAME} --catch_system_error=yes
+                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
     endforeach()
 endfunction()
 
@@ -34,6 +35,7 @@ function(add_boost_test_with_lib SOURCE_FILE_NAME DEPENDENCY_LIB)
 
         add_test(NAME "${TEST_EXECUTABLE_NAME}.${TEST_NAME}" 
                  COMMAND ${TEST_EXECUTABLE_NAME}
-                 --run_test=${TEST_NAME} --catch_system_error=yes)
+                 --run_test=${TEST_NAME} --catch_system_error=yes
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
     endforeach()
 endfunction()

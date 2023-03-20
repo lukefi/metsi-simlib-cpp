@@ -6,8 +6,8 @@
 
 BOOST_AUTO_TEST_CASE(simple_sequence_run) {
     // this test shows that a full simulation run is preparable and runnable from source files
-    auto control_data = read_yaml("resources/mock_run_1.yaml");
-    auto data = read_forest_csv("resources/forest_data.csv");
+    auto control_data = read_yaml("test_resources/mock_run_1.yaml");
+    auto data = read_forest_csv("test_resources/forest_data.csv");
     auto alias_resolver = alias_resolver_closure(control_data);
     auto event_resolver = parameterized_event_resolver_closure<SimulationState>(alias_resolver, base_event_resolver);
     auto simulation = prepare_simulation<SimulationState>(event_resolver, control_data["simulation_events"]);

@@ -40,12 +40,13 @@ add_boost_test_with_lib(tests/simulation_run_test.cpp ${METSI_ALL_DEPS})
 add_boost_test_with_lib(tests/file_io_test.cpp ${METSI_ALL_DEPS})
 add_boost_test_with_lib(tests/state_model_test.cpp ${METSI_ALL_DEPS})
 
-# TODO: need to make this work without specific TARGET..
-# OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources doesn't do anything
+
+#Running things from CLion defaults to PWD as the binary dir. These command is a time-saving helper for that.
+#Running tests with CTest, working directory is configured to be the source directory.
 add_custom_command(TARGET yaml_cpp_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/resources
-        $<TARGET_FILE_DIR:yaml_cpp_test>/resources
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_resources
+        $<TARGET_FILE_DIR:yaml_cpp_test>/test_resources
         )
 
 add_custom_command(TARGET metsi POST_BUILD

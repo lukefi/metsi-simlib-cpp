@@ -7,35 +7,83 @@ on:
     branches: [ "main" ]
 
 env:
-  TEST_RUN_TARGET: ninja-single-debug
+  LINUX_PRESET: ninja-release
+  WINDOWS_PRESET: msbuild-release
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  build-linux:
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Submodules
-      run: git submodule update --init deps/vcpkg
+      - name: Submodules
+        run: git submodule update --init deps/vcpkg
 
-    - name: Setup vcpkg env
-      uses: lukka/run-vcpkg@v10
-      with:
-        vcpkgDirectory: '${{ github.workspace }}/deps/vcpkg'
-        vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
-        runVcpkgInstall: true
+      - uses: lukka/get-cmake@latest
 
-    - name: CMake run
-      uses: lukka/run-cmake@v10
-      with:
-        configurePreset: '${{env.TEST_RUN_TARGET}}'
-        buildPreset: '${{env.TEST_RUN_TARGET}}'
+      - name: Setup vcpkg env
+        uses: lukka/run-vcpkg@v10.7
+        with:
+          vcpkgDirectory: ${{github.workspace}}/deps/vcpkg
+          vcpkgJsonGlob: ${{github.workspace}}/vcpkg.json
+          runVcpkgInstall: true
 
-    - name: Test
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: |
-        ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/src/metsi-app --output-on-failure
-        ctest --test-dir ${{github.workspace}}/builds/${{env.TEST_RUN_TARGET}}/src/metsi-simlib --output-on-failure
+      - name: CMake configure
+        run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.LINUX_PRESET}}
 
+      - name: CMake build
+        run: cmake --build --preset ${{env.LINUX_PRESET}}
+
+      - name: metsi-simlib unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.LINUX_PRESET}}/metsi-simlib --output-on-failure
+
+      - name: metsi-app unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.LINUX_PRESET}}/metsi-app --output-on-failure
+
+      - name: CMake install
+        run: cmake --install builds/${{env.LINUX_PRESET}}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: metsi-${{runner.os}}
+          path: ${{github.workspace}}/${{runner.os}}-installprefix/*
+
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Submodules
+        run: git submodule update --init deps/vcpkg
+
+      - uses: lukka/get-cmake@latest
+
+      - name: Setup vcpkg env
+        uses: lukka/run-vcpkg@v10.7
+        with:
+          vcpkgDirectory: deps/vcpkg
+          vcpkgJsonGlob: '**/vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: CMake configure
+        run: cmake . -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/${{runner.os}}-installprefix --preset ${{env.WINDOWS_PRESET}}
+
+      - name: CMake build
+        run: cmake --build --preset ${{env.WINDOWS_PRESET}} --config Release
+
+      - name: metsi-simlib unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-simlib -C Release --output-on-failure
+
+      - name: metsi-app unit tests
+        run: ctest --test-dir ${{github.workspace}}/builds/${{env.WINDOWS_PRESET}}/metsi-app -C Release --output-on-failure
+
+      - name: CMake install
+        run: |
+          cmake --install builds/${{env.WINDOWS_PRESET}} --config Release
+          cp builds/${{env.WINDOWS_PRESET}}/metsi-app/Release/boost_program_options-vc143-mt-x64-1_81.dll ${{github.workspace}}/${{runner.os}}-installprefix/
+          cp builds/${{env.WINDOWS_PRESET}}/metsi-app/Release/yaml-cpp.dll ${{github.workspace}}/${{runner.os}}-installprefix/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: metsi-${{runner.os}}
+          path: ${{github.workspace}}/${{runner.os}}-installprefix/*

@@ -3,12 +3,12 @@
 #include <file_io.hpp>
 
 BOOST_AUTO_TEST_CASE(read_yaml_file) {
-    YAML::Node test = read_yaml("resources/test.yaml");
+    YAML::Node test = read_yaml("test_resources/test.yaml");
     BOOST_CHECK(test.Type() == YAML::NodeType::Map);
 }
 
 BOOST_AUTO_TEST_CASE(read_forest_stands) {
-    auto result = read_forest_csv("resources/forest_data.csv");
+    auto result = read_forest_csv("test_resources/forest_data.csv");
     BOOST_CHECK(result.size() == 1);
     BOOST_CHECK(result[0].get<std::string>("identifier") == "43174747");
     BOOST_CHECK(result[0].get<int>("year") == 2021);

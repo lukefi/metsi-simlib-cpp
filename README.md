@@ -52,9 +52,10 @@ Table of dependency libraries:
 The `CMakePresets.json` file specifies several presets for configuring environments and building.
 All named presets work as both configuration presets and build presets.
 
-* `ninja-single-debug` is a target for generating single Debug type build with ninja generator on Linux and OSX hosts
-* `ninja-single-release` is a target for generating single Release type build with ninja generator on Linux and OSX hosts
-* `msbuild-vcpkg` is a target for Windows hosts for using the MSVC toolchain
+* `ninja-debug` Debug target for Macintosh or Linux hosts using CLang or GCC toolchain and Ninja generator
+* `ninja-release` Release target for Macintosh or Linux hosts using CLang or GCC toolchain and Ninja generator
+* `msbuild-debug` Debug target for Windows hosts using the MSVC toolchain and MSBuild generator
+* `msbuild-release` Release target for Windows hosts using the MSVC toolchain and MSBuild generator
 
 All presets assume vcpkg availability in `deps/vcpkg`.
 

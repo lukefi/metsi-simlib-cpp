@@ -2,15 +2,17 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 22,
+    "minor": 21,
     "patch": 0
   },
   "configurePresets": [
     {
-      "name": "ninja-single",
-      "displayName": "Ninja single vcpkg",
-      "description": "Ninja single type build with vcpkg",
+      "name": "ninja-vcpkg-base",
+      "hidden": true,
+      "displayName": "Ninja with vcpkg configure",
+      "description": "Ninja with vcpkg configure",
       "binaryDir": "${sourceDir}/builds/${presetName}",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
           "type": "FILEPATH",
@@ -19,10 +21,10 @@
       }
     },
     {
-      "inherits": "ninja-single",
-      "name": "ninja-single-debug",
-      "displayName": "Ninja debug build",
-      "description": "Single target debug build",
+      "name": "ninja-debug",
+      "inherits": "ninja-vcpkg-base",
+      "displayName": "Ninja debug configure",
+      "description": "Ninja debug configure",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": {
           "type": "STRING",
@@ -31,21 +33,26 @@
       }
     },
     {
-      "inherits": "ninja-single",
-      "name": "ninja-single-release",
-      "displayName": "Ninja release build",
-      "description": "Single target release build",
+      "name": "ninja-release",
+      "inherits": "ninja-vcpkg-base",
+      "displayName": "Ninja release configure",
+      "description": "Ninja release configure",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": {
           "type": "STRING",
           "value": "Release"
+        },
+        "CMAKE_CXX_FLAGS": {
+          "type": "STRING",
+          "value": "-O3"
         }
       }
     },
     {
-      "name": "msbuild-vcpkg",
-      "displayName": "MSBuild (vcpkg toolchain) Configure Settings",
-      "description": "Configure with VS generators and with vcpkg toolchain",
+      "name": "msbuild-vcpkg-base",
+      "hidden": true,
+      "displayName": "MSBuild vcpkg configure",
+      "description": "MSBuild vcpkg configure",
       "binaryDir": "${sourceDir}/builds/${presetName}",
       "generator": "Visual Studio 17 2022",
       "architecture": {
@@ -58,26 +65,64 @@
           "value": "${sourceDir}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
         }
       }
+    },
+    {
+      "name": "msbuild-debug",
+      "inherits": "msbuild-vcpkg-base",
+      "displayName": "MSBuild debug configure",
+      "description": "MSBuild debug configure",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Debug"
+        },
+        "CMAKE_CXX_FLAGS": {
+          "type": "STRING",
+          "value": "-EHsc"
+        }
+      }
+    },
+    {
+      "name": "msbuild-release",
+      "inherits": "msbuild-vcpkg-base",
+      "displayName": "MSBuild release configure",
+      "description": "MSBuild release configure",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": {
+          "type": "STRING",
+          "value": "Release"
+        },
+        "CMAKE_CXX_FLAGS": {
+          "type": "STRING",
+          "value": "-EHsc -Ox"
+        }
+      }
     }
   ],
   "buildPresets": [
     {
-      "name": "ninja-single-debug",
-      "configurePreset": "ninja-single-debug",
-      "displayName": "Build ninja-single-debug",
-      "description": "Build ninja-single-debug"
+      "name": "ninja-debug",
+      "configurePreset": "ninja-debug",
+      "displayName": "Build ninja-debug",
+      "description": "Build ninja-debug"
     },
     {
-      "name": "ninja-single-release",
-      "configurePreset": "ninja-single-release",
-      "displayName": "Build ninja-single-release",
-      "description": "Build ninja-single-release"
+      "name": "ninja-release",
+      "configurePreset": "ninja-release",
+      "displayName": "Build ninja-release",
+      "description": "Build ninja-release"
     },
     {
-      "name": "msbuild-vcpkg",
-      "configurePreset": "msbuild-vcpkg",
-      "displayName": "Build MSBuild",
-      "description": "Build with MSBuild (VS)"
+      "name": "msbuild-debug",
+      "configurePreset": "msbuild-debug",
+      "displayName": "Build msbuild-debug",
+      "description": "Build msbuild-debug"
+    },
+    {
+      "name": "msbuild-release",
+      "configurePreset": "msbuild-release",
+      "displayName": "Build msbuild-release",
+      "description": "Build msbuild-release"
     }
   ]
 }

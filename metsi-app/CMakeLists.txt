@@ -19,8 +19,8 @@ target_link_libraries(metsi-applib ${METSI_EXTERNAL_DEPS})
 add_executable(metsi ${SOURCE_FILES})
 target_link_libraries(metsi ${METSI_ALL_DEPS})
 
-install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX}/share/metsi)
+install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 include_directories(src)
 find_package(Boost 1.81.0 COMPONENTS unit_test_framework REQUIRED)
@@ -30,22 +30,23 @@ include(BoostTestHelpers.cmake)
 #include_directories(${LUA_INCLUDE_DIR})
 include_directories(${METSI_SIMLIB_INCLUDE_DIR})
 
-add_boost_test(tests/csv_parser_test.cpp)
-add_boost_test(tests/overlaid_object_test.cpp)
-#add_boost_test_with_lib(tests/lua_test.cpp luajit-5.1)
-add_boost_test_with_lib(tests/app_io_test.cpp ${METSI_ALL_DEPS})
-add_boost_test_with_lib(tests/yaml_cpp_test.cpp ${METSI_ALL_DEPS})
-add_boost_test_with_lib(tests/sim_configuration_test.cpp ${METSI_ALL_DEPS})
-add_boost_test_with_lib(tests/simulation_run_test.cpp ${METSI_ALL_DEPS})
-add_boost_test_with_lib(tests/file_io_test.cpp ${METSI_ALL_DEPS})
-add_boost_test_with_lib(tests/state_model_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/csv_parser_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/overlaid_object_test.cpp ${METSI_ALL_DEPS})
+#add_boost_test(tests/lua_test.cpp luajit-5.1 ${METSI_ALL_DEPS})
+add_boost_test(tests/app_io_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/yaml_cpp_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/sim_configuration_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/simulation_run_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/file_io_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/state_model_test.cpp ${METSI_ALL_DEPS})
 
-# TODO: need to make this work without specific TARGET..
-# OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources doesn't do anything
+
+#Running things from CLion defaults to PWD as the binary dir. These command is a time-saving helper for that.
+#Running tests with CTest, working directory is configured to be the source directory.
 add_custom_command(TARGET yaml_cpp_test POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/resources
-        $<TARGET_FILE_DIR:yaml_cpp_test>/resources
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_resources
+        $<TARGET_FILE_DIR:yaml_cpp_test>/test_resources
         )
 
 add_custom_command(TARGET metsi POST_BUILD

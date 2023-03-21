@@ -1,3 +1,6 @@
 [submodule "deps/vcpkg"]
 	path = deps/vcpkg
 	url = https://github.com/microsoft/vcpkg
+[submodule "deps/luajit"]
+	path = deps/luajit
+	url = https://github.com/WohlSoft/LuaJIT

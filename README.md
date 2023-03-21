@@ -19,16 +19,20 @@ The following subsections describe the main concepts for working with this proje
 
 ### Dependencies
 
-Dependencies are managed by vcpkg as a submodule.
-Initialize vcpkg by running
+LuaJIT dependency is included as a submodule.
+The csv-parser dependency is included as a single header source file in-project.
+Other dependencies are managed by vcpkg as a submodule.
+Initialize by running
 
 ```
+git submodule update --init deps/luajit
 git submodule update --init deps/vcpkg
 ./deps/vcpkg/bootstrap-vcpkg.bat # on Windows CMD or PowerShell
 ./deps/vcpkg/bootstrap-vcpkg.sh  # on Linux/OSX shells or Windows Git BASH shell
 ```
 
-This process essentially downloads `vcpkg.exe` on Windows or `vcpkg` on Linux or OSX, building it if necessary.
+This initializes the luajit submodule dependency.
+For vcpkg it essentially downloads `vcpkg.exe` on Windows or `vcpkg` on Linux or OSX, building it if necessary.
 For Windows, you can also manually obtain vcpkg.exe from https://github.com/microsoft/vcpkg-tool/releases/download/2023-03-01/vcpkg.exe and insert it into the `deps/vcpkg` directory.
 
 Resolving and installing dependency libraries should be performed automatically by CMake configuration (see below).
@@ -45,7 +49,7 @@ Table of dependency libraries:
 | yaml-cpp   | 0.7.0   | https://github.com/jbeder/yaml-cpp          | MIT     ||
 | csv-parser | 2.1.3   | https://github.com/vincentlaucsb/csv-parser | MIT     | Included as single header copy `src/metsi-app/src/csv_parser.hpp |
 | boost      | 0.81.0  | https://github.com/boostorg/boost           | BSL-1.0 | boost-test, boost-program-options, boost-lexical-cast            |
-| luajit     | 2.1     | https://github.com/LuaJIT/LuaJIT            | MIT     ||
+| luajit     | 2.1     | https://github.com/WohlSoft/LuaJIT          | MIT     | A fork of actual luajit repo, adding CMake build possibility     |
 
 ### CMake Presets
 
@@ -121,6 +125,6 @@ A default example run would be
 On Windows, you need to obtain Visual Studio 2022 (at least Community Edition).
 This will require Administrator privileges on your host.
 Use the Visual Studio Installer to obtain the MSVC CLI tools along with the version 17 MSVC toolchain.
-With this setup, the `msbuild-vcpkg` preset should work out of the box on any IDE or otherwise.
-It should be possible to use MinGW or other configurations, but this has not been explored.
+With this setup, the `msbuild-*` presets should work out of the box on any IDE or otherwise.
+It should be possible to use MinGW or other configurations with the `ninja-*` presets, but this has not been explored.
 

@@ -19,8 +19,11 @@ std::map<std::string, ResultStates<SimulationState>> do_simulate(const YAML::Nod
         for(auto pair : simulation) {
             ResultStates<SimulationState> time_point_results;
             for(auto state : stand_states) {
-                auto current = pair.second->evaluate_depth(state);
-                time_point_results.insert(time_point_results.end(), current.begin(), current.end());
+                try {
+                    auto current = pair.second->evaluate_depth(state);
+                    time_point_results.insert(time_point_results.end(), current.begin(), current.end());
+                }
+                catch(BranchException& e) {}
             }
             stand_states = time_point_results;
         }
@@ -54,10 +57,16 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    auto results = do_simulate(control_data, stands);
+    try {
+        auto results = do_simulate(control_data, stands);
 
-    for(auto pair : results){
-        std::cout << "Produced " << pair.second.size() << " schedules for stand " << pair.first << "\n";
+        for (auto pair: results) {
+            std::cout << "Produced " << pair.second.size() << " schedules for stand " << pair.first << "\n";
+        }
+    }
+    catch(std::exception& e) {
+        std::cout << "General exception while running simulation:" << "\n";
+        std::cout << e.what();
     }
 
     return 0;

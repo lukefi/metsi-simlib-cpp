@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 /**
 * Forward declarations of core types in the metsi sim library.
@@ -30,6 +31,18 @@ using EventLabelsWithParameters = std::map<std::string, EventParameters>;
 using EventLabelAliases = std::map<std::string, EventLabelWithParameters>;
 template<typename T> using ParameterizedEventFn = std::function<StateReference<T>(StateReference<T>, EventParameters)>;
 template<typename T> using EventFnResolver = std::function<EventFn<T>(EventLabelWithParameters)>;
+
+/// Exceptions
+class BranchException : std::exception {
+private:
+    std::string message;
+public:
+    explicit BranchException(std::string msg) : message(std::move(msg)) {};
+    [[nodiscard]] const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
 
 #endif
 

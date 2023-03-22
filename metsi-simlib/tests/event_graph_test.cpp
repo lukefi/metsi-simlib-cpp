@@ -8,6 +8,11 @@ StateReference<int> event(StateReference<int> a) {
     return a;
 }
 
+StateReference<int> fail_event(StateReference<int> a) {
+    throw BranchException("Failed branch");
+    return a;
+}
+
 BOOST_AUTO_TEST_CASE(event_graph_initialization) {
     EventNode<int> g = EventDAG<int>::new_node(event);
     LeafNodes<int> leaves = g->collect_leaf_nodes();
@@ -58,4 +63,24 @@ BOOST_AUTO_TEST_CASE(evaluate_three_paths_graph) {
     BOOST_CHECK(*depth_results[0] == 3);
     BOOST_CHECK(*depth_results[1] == 3);
     BOOST_CHECK(*depth_results[2] == 4);
+}
+
+BOOST_AUTO_TEST_CASE(all_branches_failure_fails) {
+    EventNode<int> root = EventDAG<int>::new_node(event);
+    EventNode<int> f1 = EventDAG<int>::new_node(fail_event);
+    EventNode<int> f2 = EventDAG<int>::new_node(fail_event);
+    root->add_node(f1);
+    root->add_node(f2);
+    auto sim_state = std::make_shared<int>(0);
+    BOOST_CHECK_THROW(root->evaluate_depth(sim_state), BranchException);
+}
+
+BOOST_AUTO_TEST_CASE(single_branch_failure_succeeds) {
+    EventNode<int> root = EventDAG<int>::new_node(event);
+    EventNode<int> f1 = EventDAG<int>::new_node(event);
+    EventNode<int> f2 = EventDAG<int>::new_node(fail_event);
+    root->add_node(f1);
+    root->add_node(f2);
+    auto sim_state = std::make_shared<int>(0);
+    BOOST_CHECK_NO_THROW(root->evaluate_depth(sim_state));
 }

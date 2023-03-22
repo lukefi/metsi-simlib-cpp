@@ -93,9 +93,18 @@ template<typename T> ResultStates<T> EventDAG<T>::evaluate_depth(StateReference<
             results.insert(results.end(), sub_results.begin(), sub_results.end());
         }
         else if(this->followers.size() > 1) {
+            int aborted_branches = 0;
             for (EventNode<T> node: this->followers) {
-                ResultStates<T> sub_results = node->evaluate_depth(std::make_shared<T>(*current));
-                results.insert(results.end(), sub_results.begin(), sub_results.end());
+                try {
+                    ResultStates<T> sub_results = node->evaluate_depth(std::make_shared<T>(*current));
+                    results.insert(results.end(), sub_results.begin(), sub_results.end());
+                }
+                catch(BranchException& e) {
+                    aborted_branches++;
+                }
+            }
+            if(this->followers.size() == aborted_branches) {
+                throw BranchException("All branches aborted.");
             }
         }
     }

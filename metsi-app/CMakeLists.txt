@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 3.2)
 project(metsi-app)
 
-#find_package(PkgConfig REQUIRED)
 find_package(Boost 1.81.0 COMPONENTS program_options REQUIRED)
 find_package(yaml-cpp 0.7.0 REQUIRED)
-#pkg_check_modules(LuaJIT REQUIRED luajit)
 include_directories(${Boost_INCLUDE_DIR})
+include_directories(${LUAJIT_INCLUDE_DIR})
 
 set(LIB_SOURCE_FILES src/sim_configuration.cpp src/file_io.cpp src/state_model.cpp src/app_io.cpp src/sim_events.cpp)
 set(SOURCE_FILES src/main.cpp ${LIB_SOURCE_FILES})
-set(METSI_EXTERNAL_DEPS yaml-cpp metsi-simlib ${Boost_LIBRARIES})
+set(METSI_EXTERNAL_DEPS yaml-cpp metsi-simlib libluajit ${Boost_LIBRARIES})
 set(METSI_ALL_DEPS metsi-applib ${METSI_EXTERNAL_DEPS})
 
 # metsi files are librarized for Boost unit testability
@@ -32,7 +31,7 @@ include_directories(${METSI_SIMLIB_INCLUDE_DIR})
 
 add_boost_test(tests/csv_parser_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/overlaid_object_test.cpp ${METSI_ALL_DEPS})
-#add_boost_test(tests/lua_test.cpp luajit-5.1 ${METSI_ALL_DEPS})
+add_boost_test(tests/lua_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/app_io_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/yaml_cpp_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/sim_configuration_test.cpp ${METSI_ALL_DEPS})

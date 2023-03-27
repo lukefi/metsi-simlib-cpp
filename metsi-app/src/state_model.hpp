@@ -102,9 +102,15 @@ public:
 
 class SimulationState {
     ForestStand stand;
+    mutable std::map<std::string, std::vector<float>> var_cache;
+    static std::pair<std::string, std::string> parse_variable_tokens(const std::string&);
+protected:
+    void flush_cache() const;
 public:
     explicit SimulationState(const ForestStand&);
     SimulationState(const SimulationState&);
+    std::vector<float>& get_vars(const std::string&);
+    ForestStand& get_stand() { return stand; };
 };
 
 #endif

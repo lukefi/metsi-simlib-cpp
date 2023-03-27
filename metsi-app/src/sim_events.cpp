@@ -26,10 +26,19 @@ StateReference<SimulationState> grow_acta(StateReference<SimulationState> state,
         step = boost::lexical_cast<int>(params["step"]);
     }
 
-    // TODO: grow the forest
+    auto& ds = state->get_vars("tree#dbh");
+    auto& hs = state->get_vars("tree#height");
+    auto& ages = state->get_vars("tree#age");
+    auto& spes = state->get_vars("tree#species");
+
+    for(int i=0;i<state->get_stand().trees.size();i++) {
+        ds[i] += 0.1f;
+        hs[i] += 1.0f;
+        ages[i] += (float)step;
+    }
 
     return state;
-};
+}
 
 
 /**

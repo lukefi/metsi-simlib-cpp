@@ -38,6 +38,7 @@ add_boost_test(tests/sim_configuration_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/simulation_run_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/file_io_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/state_model_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/sim_events_test.cpp ${METSI_ALL_DEPS})
 
 
 #Running things from CLion defaults to PWD as the binary dir. These command is a time-saving helper for that.

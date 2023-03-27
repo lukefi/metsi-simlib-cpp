@@ -14,7 +14,7 @@ static std::map<std::string, int> tree_indices{
         {"identifier", 1},
         {"species", 2},
         {"stems_ha", 4},
-        {"diameter_bh", 5},
+        {"dbh", 5},
         {"height", 6},
         {"age_bh", 7},
         {"age", 8}

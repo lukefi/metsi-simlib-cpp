@@ -27,7 +27,7 @@ Initialize by running
 ```
 git submodule update --init deps/luajit
 git submodule update --init deps/vcpkg
-./deps/vcpkg/bootstrap-vcpkg.bat # on Windows CMD or PowerShell
+./deps/vcpkg/bootstrap-vcpkg.bat # on Windows PowerShell
 ./deps/vcpkg/bootstrap-vcpkg.sh  # on Linux/OSX shells or Windows Git BASH shell
 ```
 
@@ -35,12 +35,7 @@ This initializes the luajit submodule dependency.
 For vcpkg it essentially downloads `vcpkg.exe` on Windows or `vcpkg` on Linux or OSX, building it if necessary.
 For Windows, you can also manually obtain vcpkg.exe from https://github.com/microsoft/vcpkg-tool/releases/download/2023-03-01/vcpkg.exe and insert it into the `deps/vcpkg` directory.
 
-Resolving and installing dependency libraries should be performed automatically by CMake configuration (see below).
-If you have to do this manually, run
-
-```
-./deps/vcpkg install
-```
+Resolving and installing dependency libraries should be performed automatically later by CMake configuration (see below).
 
 Table of dependency libraries:
 

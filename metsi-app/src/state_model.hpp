@@ -2,6 +2,7 @@
 #define STATE_MODEL_HPP
 #include <map>
 #include <memory>
+#include <vector>
 #include "overlaid_object.hpp"
 
 using Properties = std::map<std::string, std::string>;

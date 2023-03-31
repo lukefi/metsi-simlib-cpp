@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net" modified="2023-03-31T04:45:21.624Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/111.0" etag="l2hr6SzWHiNyr-ifh7oH" version="21.1.2">
+  <diagram name="Page-1" id="kYouIgI1F3cl6q0f5jim">
+    <mxGraphModel dx="1194" dy="739" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-1" value="&lt;h1&gt;YAML list, format 1&lt;br&gt;&lt;/h1&gt;&lt;div&gt;&lt;font&gt;- string_one&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;- string with whitespaces&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;- &quot;explicit string&quot;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;- 1&lt;/font&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-2" value="&lt;h1&gt;YAML list, format 2&lt;br&gt;&lt;/h1&gt;&lt;div&gt;&lt;font&gt;[string_one, string with whitespaces, &quot;explicit string&quot;, 1]&lt;br&gt;&lt;/font&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="470" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-4" value="&lt;h1&gt;YAML object&lt;/h1&gt;&lt;div&gt;property1: value1&lt;/div&gt;&lt;div&gt;property2: value2&lt;/div&gt;&lt;div&gt;property3: [subvalue3_1, subvalue3_2]&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-6" value="&lt;h1&gt;JSON list&lt;br&gt;&lt;/h1&gt;&lt;div&gt;&lt;font&gt;[&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;&amp;nbsp; &quot;string_one&quot;, &lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;&amp;nbsp; &quot;string with whitespaces&quot;, &lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;&amp;nbsp; &quot;explicit string&quot;,&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;&amp;nbsp; 1&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font&gt;]&lt;br&gt;&lt;/font&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="200" width="350" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-7" value="&lt;h1&gt;JSON object&lt;/h1&gt;&lt;div&gt;{&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property1&quot;: &quot;value1&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property2&quot;: &quot;value2&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property3&quot;: &quot;value3&quot;&lt;/div&gt;&lt;div&gt;}&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="520" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-8" value="&lt;h1&gt;YAML value&lt;br&gt;&lt;/h1&gt;&lt;div&gt;String is the only primitive value&lt;/div&gt;&lt;div&gt;List is a value&lt;/div&gt;&lt;div&gt;Object is a value&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="350" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-9" value="&lt;h1&gt;Nested object&lt;br&gt;&lt;/h1&gt;&lt;div&gt;container:&lt;/div&gt;&lt;div&gt;&amp;nbsp; property1: value1&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; property2: value2&lt;/div&gt;&lt;div&gt;&amp;nbsp; property3: [subvalue3_1, subvalue3_2]&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-11" value="&lt;h1&gt;JSON nested object&lt;/h1&gt;&lt;div&gt;{&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;container&quot;: {&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property1&quot;: &quot;value1&quot;,&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property2&quot;: &quot;value2&quot;,&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;property3&quot;: &quot;value3&quot;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&lt;br&gt;&lt;/div&gt;&lt;div&gt;}&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="720" width="350" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-13" value="&lt;h1&gt;YAML List of objects&lt;br&gt;&lt;/h1&gt;&lt;div&gt;- name: Alice&lt;br&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; age: 39&lt;br&gt;&lt;/div&gt;&lt;div&gt;- name: Bob&lt;/div&gt;&lt;div&gt;&amp;nbsp; age: 27&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="880" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-14" value="&lt;h1&gt;YAML Object with lists&lt;br&gt;&lt;/h1&gt;&lt;div&gt;list_container:&lt;/div&gt;&lt;div&gt;&amp;nbsp; - [1, 2, 3]&lt;/div&gt;&lt;div&gt;&amp;nbsp; - - 1&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; - 2&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; - 3&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-15" value="&lt;h1&gt;YAML multiline&lt;br&gt;&lt;/h1&gt;&lt;div&gt;prose: |&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; a string&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; spanning&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; multiple lines&lt;/div&gt;&lt;div&gt;author: John&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1200" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-16" value="&lt;h1&gt;JSON multiline&lt;br&gt;&lt;/h1&gt;&lt;div&gt;{&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;prose&quot;: &quot;a string\nspanning\nmultiple lines&quot;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;author&quot;: &quot;John&quot;&lt;br&gt;&lt;/div&gt;&lt;div&gt;}&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1200" width="390" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-17" value="&lt;h1&gt;JSON object with lists&lt;br&gt;&lt;/h1&gt;&lt;div&gt;{&lt;/div&gt;&lt;div&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;list_container&quot;: [[1, 2, 3], [1, 2, 3]]&lt;/div&gt;&lt;div&gt;}&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1040" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="R56tk72GFJ5zFjxT9w6G-18" value="&lt;h1&gt;JSON List of objects&lt;br&gt;&lt;/h1&gt;&lt;div&gt;[&lt;/div&gt;&lt;div&gt;&amp;nbsp; { &quot;name&quot;: &quot;Alice, &quot;age&quot;: 39 },&lt;/div&gt;&lt;div&gt;&amp;nbsp; { &quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 27 }&lt;/div&gt;&lt;div&gt;]&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="440" y="880" width="350" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

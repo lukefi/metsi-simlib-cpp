@@ -67,3 +67,27 @@ std::vector<ForestStand> read_forest_csv(const std::string& file_path) {
     }
     return stands;
 }
+
+ForestStandCSVReader::iterator::iterator(csv::CSVReader* reader) {
+    this->reader = reader;
+    this->csv_iter = reader->begin();
+}
+
+void ForestStandCSVReader::iterator::parse_stand() {
+    if(next[0] == "stand") {
+        current = ForestStand(vars_from_row(next, stand_indices));
+        csv_iter++;
+        if(csv_iter == reader->())
+        while( != "stand") {
+
+        }
+    }
+}
+
+ForestStandCSVReader::iterator::reference ForestStandCSVReader::iterator::operator*() { return current; }
+auto ForestStandCSVReader::iterator::operator++() {
+    return current;
+}
+ForestStandCSVReader::iterator ForestStandCSVReader::iterator::operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
+bool operator==(ForestStandCSVReader::iterator a, ForestStandCSVReader::iterator::sentinel b) { return a == b; }
+bool operator!=(ForestStandCSVReader::iterator a, ForestStandCSVReader::iterator::sentinel b) { return &a != &b; }

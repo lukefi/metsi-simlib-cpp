@@ -18,6 +18,8 @@ target_link_libraries(metsi-applib ${METSI_EXTERNAL_DEPS})
 add_executable(metsi ${SOURCE_FILES})
 target_link_libraries(metsi ${METSI_ALL_DEPS})
 
+add_executable(itertest src/itertest.cpp)
+
 install(TARGETS metsi DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY resources DESTINATION ${CMAKE_INSTALL_PREFIX})
 

@@ -67,3 +67,43 @@ std::vector<ForestStand> read_forest_csv(const std::string& file_path) {
     }
     return stands;
 }
+
+ForestStandCSVReader::iterator::iterator(csv::CSVReader* reader) {
+    this->reader = reader;
+    this->csv_iter = reader->begin();
+}
+
+/**
+ * Utilize the underlying CSV file iterator to parse a ForestStand from current stand row down to the following stand
+ * row or the end of file.
+ *
+ * @return ForestStand that has been parsed
+ * @throws std::out_of_range upon attempting to parse at end of file
+ * @throws std::domain_error upon attempting to parse stand from an unexpected non-stand row
+ */
+ForestStand ForestStandCSVReader::iterator::parse_stand() {
+    if(csv_iter == reader->end()) {
+        throw std::out_of_range("Attempted to parse ForestStand beyond end of content.");
+    }
+
+    if((*csv_iter)[0] == "stand") {
+        auto current = ForestStand(vars_from_row(*csv_iter, stand_indices));
+        csv_iter++;
+        while( csv_iter != reader->end() && (*csv_iter)[0] != "stand") {
+            if((*csv_iter)[0] == "tree") {
+                current.create_tree(vars_from_row(*csv_iter, tree_indices));
+            }
+            csv_iter++;
+        }
+        return current;
+    }
+    else {
+        throw std::domain_error("Unable to parse ForestStand from file. Malformed CSV?");
+    }
+}
+
+ForestStandCSVReader::ForestStandCSVReader(const std::string& filepath) {
+    csv::CSVFormat format;
+    format.delimiter(';').no_header();
+    reader = new csv::CSVReader(filepath, format);
+}

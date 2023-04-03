@@ -121,7 +121,7 @@ template<AnyStore T> template<typename U> void OverlaidObject<T>::set(std::strin
     if(immutable) {
         throw(std::domain_error("Attempted to mutate a locked overlay layer with key " + key));
     }
-    values.insert(std::make_pair(key, boost::lexical_cast<std::string>(value)));
+    values[key] = boost::lexical_cast<std::string>(value);
 }
 
 template<AnyStore T> std::shared_ptr<OverlaidObject<T>> OverlaidObject<T>::create(std::shared_ptr<T> prototype) {

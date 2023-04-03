@@ -12,11 +12,11 @@ using Properties = std::map<std::string, std::string>;
  */
 class WithOverlay {
 protected:
-    std::shared_ptr<OverlaidObject<Properties>> overlay;
+    mutable std::shared_ptr<OverlaidObject<Properties>> overlay;
 public:
     WithOverlay();
     explicit WithOverlay(const Properties&);
-    WithOverlay(const WithOverlay&);
+    virtual void new_layer() const;
     const std::string& operator [](const std::string&) const;
     template<typename U> void set(const std::string&, U) const;
     template<typename U> U get(const std::string&) const;
@@ -60,8 +60,6 @@ template<typename U> U WithOverlay::get(const std::string& key) const {
  */
 class ReferenceTree : public WithOverlay {
 public:
-    ReferenceTree() = default;
-    ReferenceTree(const ReferenceTree&) = default;
     explicit ReferenceTree(const Properties& props) : WithOverlay(props) {};
 };
 
@@ -75,8 +73,6 @@ public:
  */
 class TreeStratum : public WithOverlay {
 public:
-    TreeStratum() = default;
-    TreeStratum(const TreeStratum&) = default;
     explicit TreeStratum(const Properties& props) : WithOverlay(props) {};
 };
 
@@ -95,8 +91,8 @@ public:
     std::vector<ReferenceTree> trees;
     std::vector<TreeStratum> strata;
     ForestStand() = default;
-    ForestStand(const ForestStand&);
     explicit ForestStand(const Properties& props) : WithOverlay(props) {};
+    void new_layer() const override;
     const ReferenceTree& create_tree(const Properties& = {});
     const TreeStratum& create_stratum(const Properties& = {});
 };
@@ -111,7 +107,7 @@ public:
     explicit SimulationState(const ForestStand&);
     SimulationState(const SimulationState&);
     std::vector<float>& get_vars(const std::string&);
-    ForestStand& get_stand() { return stand; };
+    const ForestStand& get_stand() { return stand; };
 };
 
 #endif

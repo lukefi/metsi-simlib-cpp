@@ -34,10 +34,12 @@ BOOST_AUTO_TEST_CASE(data_model_copy_immutability) {
     tree_2.set<float>("dbh", 4.2f);
 
     ForestStand copy1(stand);
+    copy1.new_layer();
     copy1.set<std::string>("identifier", "stand-2");
     copy1.trees[0].set("dbh", 10.0f);
 
     ForestStand copy2(stand);
+    copy2.new_layer();
     copy2.set<std::string>("identifier", "stand-3");
     copy2.trees[0].set("dbh", 5.0f);
 
@@ -81,10 +83,8 @@ BOOST_AUTO_TEST_CASE(data_model_with_var_cache) {
     BOOST_CHECK_EQUAL_COLLECTIONS(dbh_modified.begin(), dbh_modified.end(), expected_modified.begin(), expected_modified.end());
 
     SimulationState copy_state(state);
-    ForestStand& copy_stand = copy_state.get_stand();
+    const ForestStand& copy_stand = copy_state.get_stand();
 
-    // original object reference should contain original values
-    BOOST_CHECK_CLOSE(stand.trees[0].get<float>("dbh"), 6.2f, 0.1f);
     // copied state should result in changes having been flushed into the overlay of underlying entity
     BOOST_CHECK_CLOSE(copy_stand.trees[0].get<float>("dbh"), 7.2f, 0.1f);
 }

@@ -18,13 +18,12 @@ WithOverlay::WithOverlay(const Properties& properties) {
 }
 
 /**
- * Copy constructor of a WithOverlay object. Initializes overlay as an "overlay copy" of
- * the previous instance's overlay reference. Refer to OverlayObject<T> documentation for
- * further details.
- * @param previous
+ * Initialize a new overlay level for this instances existing overlay.
+ *
+ * @return
  */
-WithOverlay::WithOverlay(const WithOverlay& previous) {
-    this->overlay = std::make_shared<OverlaidObject<Properties>>(previous.overlay);
+void WithOverlay::new_layer() const {
+    this->overlay = std::make_shared<OverlaidObject<Properties>>(this->overlay);
 }
 
 /**
@@ -37,12 +36,14 @@ const std::string& WithOverlay::operator [](const std::string& key) const {
 }
 
 /**
- * Copy constructor for ForestStand to also trigger copy constructing nested objects and
- * to perform other relevant logic.
- * @param previous
+ * Trigger creation of new layer for each contained reference tree and tree stratum entity along with self.
  */
-ForestStand::ForestStand(const ForestStand& previous) : WithOverlay(previous) {
-    this->trees = std::vector<ReferenceTree>(previous.trees);
+void ForestStand::new_layer() const {
+    std::for_each(trees.begin(), trees.end(),
+                  [](const ReferenceTree& tree) { tree.new_layer(); });
+    std::for_each(strata.begin(), strata.end(),
+                  [](const TreeStratum& stratum) { stratum.new_layer(); });
+    WithOverlay::new_layer();
 }
 
 const ReferenceTree& ForestStand::create_tree(const Properties& props) {
@@ -65,6 +66,7 @@ SimulationState::SimulationState(const ForestStand& stand): stand(stand) {}
 SimulationState::SimulationState(const SimulationState& previous) {
     previous.flush_cache();
     this->stand = ForestStand(previous.stand);
+    this->stand.new_layer();
 }
 
 std::pair<std::string, std::string> SimulationState::parse_variable_tokens(const std::string& mapping) {

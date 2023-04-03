@@ -6,30 +6,41 @@
 #include "sim_events.hpp"
 #include <metsi-simlib/core_types.hpp>
 
-std::map<std::string, ResultStates<SimulationState>> do_simulate(const YAML::Node& control_data, ForestStandCSVReader source_data) {
+ResultStates<SimulationState> do_simulate(
+        const std::map<int, EventNode<SimulationState>>& simulation,
+        const ForestStand& stand) {
+    ResultStates<SimulationState> stand_states{std::make_shared<SimulationState>(stand)};
+
+    for(const auto& pair : simulation) {
+        ResultStates<SimulationState> time_point_results;
+        for(const auto& state : stand_states) {
+            try {
+                auto current = pair.second->evaluate_depth(state);
+                time_point_results.insert(time_point_results.end(), current.begin(), current.end());
+            }
+            catch(BranchException& e) {}
+        }
+        stand_states = time_point_results;
+    }
+    return stand_states;
+}
+
+void do_export(const ResultStates<SimulationState>& schedules) {
+    //TODO: export modules logic
+}
+
+void process_stands(const YAML::Node& control_data, ForestStandCSVReader source_data) {
     auto alias_resolver = alias_resolver_closure(control_data);
     auto event_resolver = parameterized_event_resolver_closure<SimulationState>(alias_resolver, base_event_resolver);
     auto simulation = prepare_simulation<SimulationState>(event_resolver, control_data["simulation_events"]);
 
-    std::map<std::string, ResultStates<SimulationState>> results;
     for(const auto& stand : source_data) {
-        ResultStates<SimulationState> stand_states{std::make_shared<SimulationState>(stand)};
         auto stand_id = stand.get<std::string>("identifier");
-
-        for(const auto& pair : simulation) {
-            ResultStates<SimulationState> time_point_results;
-            for(const auto& state : stand_states) {
-                try {
-                    auto current = pair.second->evaluate_depth(state);
-                    time_point_results.insert(time_point_results.end(), current.begin(), current.end());
-                }
-                catch(BranchException& e) {}
-            }
-            stand_states = time_point_results;
-        }
-        results[stand_id] = stand_states;
+        auto stand_states = do_simulate(simulation, stand);
+        std::cout << "Produced " << stand_states.size() << " schedules for stand " << stand_id << "\n";
+        do_export(stand_states);
+        std::cout << "Exported data for stand " << stand_id << " (not really; not implemented yet)" << "\n";
     }
-    return results;
 }
 
 int main(int argc, char** argv) {
@@ -58,11 +69,7 @@ int main(int argc, char** argv) {
     }
 
     try {
-        auto results = do_simulate(control_data, stands);
-
-        for (const auto& pair: results) {
-            std::cout << "Produced " << pair.second.size() << " schedules for stand " << pair.first << "\n";
-        }
+        process_stands(control_data, stands);
     }
     catch(std::exception& e) {
         std::cout << "General exception while running simulation:" << "\n";

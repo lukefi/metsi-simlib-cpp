@@ -26,6 +26,7 @@ public:
     };
 
 public:
+    ForestStandCSVReader() = default;
     explicit ForestStandCSVReader(const std::string&);
     [[nodiscard]] auto begin() const { return iterator(reader); }
     [[nodiscard]] static auto end() { return iterator::sentinel{}; }

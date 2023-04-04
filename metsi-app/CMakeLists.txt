@@ -6,7 +6,7 @@ find_package(yaml-cpp 0.7.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${LUAJIT_INCLUDE_DIR})
 
-set(LIB_SOURCE_FILES src/sim_configuration.cpp src/file_io.cpp src/state_model.cpp src/app_io.cpp src/sim_events.cpp)
+set(LIB_SOURCE_FILES src/sim_configuration.cpp src/file_io.cpp src/state_model.cpp src/app_io.cpp src/sim_events.cpp src/domain_functions.cpp)
 set(SOURCE_FILES src/main.cpp ${LIB_SOURCE_FILES})
 set(METSI_EXTERNAL_DEPS yaml-cpp metsi-simlib libluajit ${Boost_LIBRARIES})
 set(METSI_ALL_DEPS metsi-applib ${METSI_EXTERNAL_DEPS})
@@ -39,6 +39,7 @@ add_boost_test(tests/simulation_run_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/file_io_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/state_model_test.cpp ${METSI_ALL_DEPS})
 add_boost_test(tests/sim_events_test.cpp ${METSI_ALL_DEPS})
+add_boost_test(tests/domain_functions_test.cpp ${METSI_ALL_DEPS})
 
 
 #Running things from CLion defaults to PWD as the binary dir. These command is a time-saving helper for that.

@@ -5,6 +5,7 @@
 #include <numbers>
 #include <cmath>
 #include <algorithm>
+#include <stdexcept>
 #include "domain_functions.hpp"
 
 /**

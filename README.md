@@ -42,9 +42,10 @@ Table of dependency libraries:
 | dependency | version | source                                      | license | note                                                             |
 |------------|---------|---------------------------------------------|---------|------------------------------------------------------------------|
 | yaml-cpp   | 0.7.0   | https://github.com/jbeder/yaml-cpp          | MIT     ||
-| csv-parser | 2.1.3   | https://github.com/vincentlaucsb/csv-parser | MIT     | Included as single header copy `src/metsi-app/src/csv_parser.hpp |
+| csv-parser | 2.1.3   | https://github.com/vincentlaucsb/csv-parser | MIT     | Included as single header copy `src/metsi-app/src/csv_parser.hpp`|
 | boost      | 0.81.0  | https://github.com/boostorg/boost           | BSL-1.0 | boost-test, boost-program-options, boost-lexical-cast            |
 | luajit     | 2.1     | https://github.com/WohlSoft/LuaJIT          | MIT     | A fork of actual luajit repo, adding CMake build possibility     |
+| dylib      | 2.1.0   | https://github.com/martin-olivier/dylib     | MIT     | Included as single header copy `src/metsi-app/src/dylib.hpp`     |
 
 ### CMake Presets
 

@@ -5,100 +5,114 @@
     "minor": 21,
     "patch": 0
   },
-  "configurePresets": [
-    {
-      "name": "ninja-vcpkg-base",
-      "hidden": true,
-      "displayName": "Ninja with vcpkg configure",
-      "description": "Ninja with vcpkg configure",
-      "binaryDir": "${sourceDir}/builds/${presetName}",
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "FILEPATH",
-          "value": "${sourceDir}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        }
-      }
-    },
-    {
-      "name": "ninja-debug",
-      "inherits": "ninja-vcpkg-base",
-      "displayName": "Ninja debug configure",
-      "description": "Ninja debug configure",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Debug"
-        }
-      }
-    },
-    {
-      "name": "ninja-release",
-      "inherits": "ninja-vcpkg-base",
-      "displayName": "Ninja release configure",
-      "description": "Ninja release configure",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
+    "configurePresets": [
+        {
+            "name": "feature-base",
+            "hidden": true,
+            "displayName": "Application feature switches configuration",
+            "description": "Application feature switches configuration",
+            "cacheVariables": {
+                "WITH_MOTTI4": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
         },
-        "CMAKE_CXX_FLAGS": {
-          "type": "STRING",
-          "value": "-O3"
-        }
-      }
-    },
-    {
-      "name": "msbuild-vcpkg-base",
-      "hidden": true,
-      "displayName": "MSBuild vcpkg configure",
-      "description": "MSBuild vcpkg configure",
-      "binaryDir": "${sourceDir}/builds/${presetName}",
-      "generator": "Visual Studio 17 2022",
-      "architecture": {
-        "strategy": "set",
-        "value": "x64"
-      },
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "FILEPATH",
-          "value": "${sourceDir}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        }
-      }
-    },
-    {
-      "name": "msbuild-debug",
-      "inherits": "msbuild-vcpkg-base",
-      "displayName": "MSBuild debug configure",
-      "description": "MSBuild debug configure",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Debug"
+        {
+            "name": "ninja-vcpkg-base",
+            "hidden": true,
+            "inherits": "feature-base",
+            "displayName": "Ninja with vcpkg configure",
+            "description": "Ninja with vcpkg configure",
+            "binaryDir": "${sourceDir}/builds/${presetName}",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
         },
-        "CMAKE_CXX_FLAGS": {
-          "type": "STRING",
-          "value": "-EHsc"
-        }
-      }
-    },
-    {
-      "name": "msbuild-release",
-      "inherits": "msbuild-vcpkg-base",
-      "displayName": "MSBuild release configure",
-      "description": "MSBuild release configure",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
+        {
+            "name": "ninja-debug",
+            "inherits": "ninja-vcpkg-base",
+            "displayName": "Ninja debug configure",
+            "description": "Ninja debug configure",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                }
+            }
         },
-        "CMAKE_CXX_FLAGS": {
-          "type": "STRING",
-          "value": "-EHsc -Ox"
+        {
+            "name": "ninja-release",
+            "inherits": "ninja-vcpkg-base",
+            "displayName": "Ninja release configure",
+            "description": "Ninja release configure",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                },
+                "CMAKE_CXX_FLAGS": {
+                    "type": "STRING",
+                    "value": "-O3"
+                }
+            }
+        },
+        {
+            "name": "msbuild-vcpkg-base",
+            "hidden": true,
+            "inherits": "feature-base",
+            "displayName": "MSBuild vcpkg configure",
+            "description": "MSBuild vcpkg configure",
+            "binaryDir": "${sourceDir}/builds/${presetName}",
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "${sourceDir}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
+        },
+        {
+            "name": "msbuild-debug",
+            "inherits": "msbuild-vcpkg-base",
+            "displayName": "MSBuild debug configure",
+            "description": "MSBuild debug configure",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                },
+                "CMAKE_CXX_FLAGS": {
+                    "type": "STRING",
+                    "value": "-EHsc"
+                }
+            }
+        },
+        {
+            "name": "msbuild-release",
+            "inherits": "msbuild-vcpkg-base",
+            "displayName": "MSBuild release configure",
+            "description": "MSBuild release configure",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                },
+                "CMAKE_CXX_FLAGS": {
+                    "type": "STRING",
+                    "value": "-EHsc -Ox"
+                }
+            }
         }
-      }
-    }
-  ],
+    ],
   "buildPresets": [
     {
       "name": "ninja-debug",

@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
+if(${APPLE})
+    set(CMAKE_OSX_ARCHITECTURES x86_64)
+    set(VCPKG_TARGET_TRIPLET x64-osx CACHE STRING "" FORCE)
+endif()
 project(metsi)
 
 set(CMAKE_CXX_STANDARD 20)

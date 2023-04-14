@@ -83,8 +83,13 @@ ParameterizedEventFn<SimulationState> base_event_resolver(EventLabelWithParamete
         if(!builtin_events.contains(event_name)) {
             throw std::domain_error("Event " + event_name + " not available as native implementation.");
         }
-        auto parameterized_event_fn = builtin_events.at(event_name);
-        return parameterized_event_fn;
+        return builtin_events.at(event_name);
+    }
+    else if(impl_type == "motti") {
+        if(!motti_events.contains(event_name)) {
+            throw std::domain_error("Event " + event_name + " not available as motti implementation.");
+        }
+        return motti_events.at(event_name);
     }
     else {
         throw std::domain_error("Unknown implementation type " + impl_type);

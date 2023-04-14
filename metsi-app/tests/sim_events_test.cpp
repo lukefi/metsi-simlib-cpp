@@ -3,8 +3,7 @@
 #include <sim_events.hpp>
 #include <metsi-simlib/core_types.hpp>
 
-BOOST_AUTO_TEST_CASE(grow_acta_test) {
-    EventParameters p{{"step", "5"}};
+StateReference<SimulationState> fixture() {
     ForestStand stand;
     stand.set<std::string>("identifier", "stand-1");
 
@@ -22,21 +21,41 @@ BOOST_AUTO_TEST_CASE(grow_acta_test) {
     tree_2.set<float>("age", 10.0f);
     tree_2.set<float>("species", 2.0f);
 
-    StateReference<SimulationState> root_state = std::make_shared<SimulationState>(stand);
-    auto res = grow_acta(root_state, p);
+    return std::make_shared<SimulationState>(stand);
+}
 
-
+void test_assertions(
+        StateReference<SimulationState> res,
+        std::vector<float> expected_ds,
+        std::vector<float> expected_hs,
+        std::vector<float> expected_as
+        ) {
     auto& ds = res->get_vars("tree#dbh");
     auto& hs = res->get_vars("tree#height");
     auto& as = res->get_vars("tree#age");
-
-    std::vector<float> expected_ds{6.3f, 4.3f};
-    std::vector<float> expected_hs{11.2f, 16.0f};
-    std::vector<float> expected_as{15.0f, 15.0f};
 
     for(int i=0;i<res->get_stand().trees.size();i++) {
         BOOST_CHECK_CLOSE(ds[i], expected_ds[i], 0.01f);
         BOOST_CHECK_CLOSE(hs[i], expected_hs[i], 0.01f);
         BOOST_CHECK_CLOSE(as[i], expected_as[i], 0.01f);
     }
+
+}
+
+BOOST_AUTO_TEST_CASE(grow_acta_test) {
+    EventParameters p{{"step", "5"}};
+
+    auto root_state = fixture();
+    auto res = grow_acta(root_state, p);
+
+    test_assertions(res,{6.3f, 4.3f},{11.2f, 16.0f},{15.0f, 15.0f});
+}
+
+BOOST_AUTO_TEST_CASE(grow_motti_test) {
+    EventParameters p{{"step", "5"}};
+
+    auto root_state = fixture();
+    auto res = grow_motti(root_state, p);
+
+    //test_assertions(res,{6.3f, 4.3f},{11.2f, 16.0f},{15.0f, 15.0f});
 }

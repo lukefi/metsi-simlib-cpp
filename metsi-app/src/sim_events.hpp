@@ -8,9 +8,12 @@
 
 StateReference<SimulationState> rest(StateReference<SimulationState>, EventParameters);
 StateReference<SimulationState> grow_acta(StateReference<SimulationState>, EventParameters);
+StateReference<SimulationState> grow_motti(StateReference<SimulationState>, EventParameters);
 
 static std::map<std::string, ParameterizedEventFn<SimulationState>> builtin_events{
         {"grow", grow_acta},
+        {"grow_acta", grow_acta},
+        {"grow_motti", grow_motti},
         {"rest", rest},
         {"do_nothing", rest}
 };

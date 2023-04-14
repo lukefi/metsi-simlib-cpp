@@ -1,4 +1,5 @@
 #include "sim_events.hpp"
+#include "motti_wrapper.hpp"
 
 #include <utility>
 
@@ -36,6 +37,25 @@ StateReference<SimulationState> grow_acta(StateReference<SimulationState> state,
         hs[i] += 1.0f;
         ages[i] += (float)step;
     }
+
+    return state;
+}
+
+StateReference<SimulationState> grow_motti(StateReference<SimulationState> state, EventParameters params) {
+    int step = 5;
+    if(params.contains("step")) {
+        step = boost::lexical_cast<int>(params["step"]);
+    }
+    auto& motti = MottiWrapper::get_instance();
+
+    //TODO: state to Motti4Site, Motti4Tree etc here
+    //...
+
+    //TODO: call Motti 4 functions
+    //...
+
+    //TODO: results back to state
+    //...
 
     return state;
 }

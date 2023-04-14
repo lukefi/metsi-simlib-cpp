@@ -7,7 +7,8 @@
  *
  * @param dl_filename_base the name of the library file without the dll/dylib/so suffix
  */
-MottiWrapper::MottiWrapper(const std::string& dl_filename_base) : motti_lib(dylib(".", dl_filename_base)) {
+MottiWrapper::MottiWrapper(const std::string& filename) :
+motti_lib(dylib(".", filename, false)) {
     this->Init = this->motti_lib.get_function<decltype(Motti4::Motti4Init)>("Motti4SiteInit");
     this->SiteInit = this->motti_lib.get_function<decltype(Motti4::Motti4SiteInit)>("Motti4SiteInit");
 	this->Growth = this->motti_lib.get_function<decltype(Motti4::Motti4Growth)>("Motti4SiteInit");

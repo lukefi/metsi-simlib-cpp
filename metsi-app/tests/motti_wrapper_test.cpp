@@ -7,7 +7,9 @@ BOOST_AUTO_TEST_CASE(motti_wrapper_init) {
 #ifdef WITH_MOTTI4
 	MottiWrapper motti("libmotti4dll");
 	BOOST_CHECK(&(motti.motti_lib) != nullptr);
-	BOOST_CHECK(&(motti.Motti4SiteInit) != nullptr);
+	BOOST_CHECK(&(motti.Init) != nullptr);
+	BOOST_CHECK(&(motti.SiteInit) != nullptr);
+	BOOST_CHECK(&(motti.Growth) != nullptr);
 #else
 	BOOST_CHECK_THROW(MottiWrapper("libmotti4dll"), std::exception);
 #endif

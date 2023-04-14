@@ -8,13 +8,15 @@ include_directories(${LUAJIT_INCLUDE_DIR})
 
 
 set(LIB_SOURCE_FILES src/sim_configuration.cpp src/file_io.cpp src/state_model.cpp src/app_io.cpp src/sim_events.cpp src/domain_functions.cpp)
+set(METSI_EXTERNAL_DEPS yaml-cpp metsi-simlib libluajit ${Boost_LIBRARIES})
+
 if(${WITH_MOTTI4})
     add_compile_definitions(WITH_MOTTI4)
     set(LIB_SOURCE_FILES src/motti_wrapper.cpp ${LIB_SOURCE_FILES})
+    set(METSI_EXTERNAL_DEPS motti4 ${METSI_EXTERNAL_DEPS})
 endif()
 
 set(SOURCE_FILES src/main.cpp ${LIB_SOURCE_FILES})
-set(METSI_EXTERNAL_DEPS yaml-cpp metsi-simlib libluajit ${Boost_LIBRARIES})
 set(METSI_ALL_DEPS metsi-applib ${METSI_EXTERNAL_DEPS})
 
 # metsi files are librarized for Boost unit testability

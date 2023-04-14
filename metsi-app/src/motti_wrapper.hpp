@@ -3,15 +3,20 @@
 
 #include <dylib.hpp>
 #include <functional>
+#include <motti4.hpp>
 
-using f_Motti4SiteInit = std::function<void(float*, float*, float*, float*, int*)>;
-
+/**
+ * This wrapper loads a given Motti4 dynamic library file (dll/dylib/so) and populates
+ * key functions based on the motti4.hpp header declarations. Additional functions may
+ * be exposed here when they become necessary.
+ */
 struct MottiWrapper {
+    dylib motti_lib;
+    std::function<decltype(Motti4::Motti4Init)> Init;
+    std::function<decltype(Motti4::Motti4SiteInit)> SiteInit;
+    std::function<decltype(Motti4::Motti4Growth)> Growth;
 
-	dylib motti_lib;
-	f_Motti4SiteInit Motti4SiteInit;
-
-	explicit MottiWrapper(const std::string&);
+    explicit MottiWrapper(const std::string &);
 };
 
 #endif

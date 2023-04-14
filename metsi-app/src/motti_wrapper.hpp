@@ -1,6 +1,8 @@
 #ifndef MOTTI_WRAPPER_HPP
 #define MOTTI_WRAPPER_HPP
-
+#include <metsi-simlib/framework_util.hpp>
+#include <string>
+#include <vector>
 #include <dylib.hpp>
 #include <functional>
 #include <motti4.hpp>
@@ -33,4 +35,10 @@ public:
     std::function<decltype(Motti4::Motti4Growth)> Growth;
 };
 
+StateReference<SimulationState> grow_motti(StateReference<SimulationState>, EventParameters);
+
+static std::map<std::string, ParameterizedEventFn<SimulationState>> motti_events{
+        {"grow", grow_motti},
+        {"grow_motti", grow_motti}
+};
 #endif

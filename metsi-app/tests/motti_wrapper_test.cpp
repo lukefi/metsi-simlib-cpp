@@ -2,15 +2,21 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 #include <motti_wrapper.hpp>
+#include "test_utils.hpp"
 
 
 BOOST_AUTO_TEST_CASE(motti_wrapper_init) {
-#ifdef WITH_MOTTI4
 	auto& motti = MottiWrapper::get_instance();
 	BOOST_CHECK(&(motti.Init) != nullptr);
 	BOOST_CHECK(&(motti.SiteInit) != nullptr);
 	BOOST_CHECK(&(motti.Growth) != nullptr);
-#else
-	BOOST_CHECK_THROW(MottiWrapper::get_instance("libmotti4dll"), std::exception);
-#endif
+}
+
+BOOST_AUTO_TEST_CASE(grow_motti_test) {
+    EventParameters p{{"step", "5"}};
+
+    auto root_state = fixture();
+    auto res = grow_motti(root_state, p);
+
+    //test_assertions(res,{6.3f, 4.3f},{11.2f, 16.0f},{15.0f, 15.0f});
 }

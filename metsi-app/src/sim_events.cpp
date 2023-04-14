@@ -1,9 +1,8 @@
-#include "sim_events.hpp"
-#include "motti_wrapper.hpp"
-
 #include <utility>
-
-
+#include "sim_events.hpp"
+#ifdef WITH_MOTTI4
+#include "motti_wrapper.hpp"
+#endif
 
 StateReference<SimulationState> rest(StateReference<SimulationState> state, EventParameters params) {
     return state;
@@ -41,25 +40,6 @@ StateReference<SimulationState> grow_acta(StateReference<SimulationState> state,
     return state;
 }
 
-StateReference<SimulationState> grow_motti(StateReference<SimulationState> state, EventParameters params) {
-    int step = 5;
-    if(params.contains("step")) {
-        step = boost::lexical_cast<int>(params["step"]);
-    }
-    auto& motti = MottiWrapper::get_instance();
-
-    //TODO: state to Motti4Site, Motti4Tree etc here
-    //...
-
-    //TODO: call Motti 4 functions
-    //...
-
-    //TODO: results back to state
-    //...
-
-    return state;
-}
-
 
 /**
  * Find a ParameterizedEventFn based on an EventLabelWithParameters.
@@ -85,12 +65,14 @@ ParameterizedEventFn<SimulationState> base_event_resolver(EventLabelWithParamete
         }
         return builtin_events.at(event_name);
     }
+#ifdef WITH_MOTTI4
     else if(impl_type == "motti") {
         if(!motti_events.contains(event_name)) {
             throw std::domain_error("Event " + event_name + " not available as motti implementation.");
         }
         return motti_events.at(event_name);
     }
+#endif
     else {
         throw std::domain_error("Unknown implementation type " + impl_type);
     }

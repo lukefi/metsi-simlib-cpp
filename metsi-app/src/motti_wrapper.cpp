@@ -1,6 +1,6 @@
+#include "sim_events.hpp"
 #include "motti_wrapper.hpp"
 
-#ifdef WITH_MOTTI4
 /**
  * Construct with the given motti4 library filename reference and populate the exposed
  * and known Motti4 functions.
@@ -19,8 +19,21 @@ MottiWrapper& MottiWrapper::get_instance(const std::string& filename) {
     return motti_lib;
 }
 
-#else
-MottiWrapper::MottiWrapper(const std::string&) {
-	throw std::exception("Application not built with Motti 4 library support.");
+StateReference<SimulationState> grow_motti(StateReference<SimulationState> state, EventParameters params) {
+    int step = 5;
+    if(params.contains("step")) {
+        step = boost::lexical_cast<int>(params["step"]);
+    }
+    auto& motti = MottiWrapper::get_instance();
+
+    //TODO: state to Motti4Site, Motti4Tree etc here
+    //...
+
+    //TODO: call Motti 4 functions
+    //...
+
+    //TODO: results back to state
+    //...
+
+    return state;
 }
-#endif

@@ -8,7 +8,6 @@
 
 StateReference<SimulationState> rest(StateReference<SimulationState>, EventParameters);
 StateReference<SimulationState> grow_acta(StateReference<SimulationState>, EventParameters);
-StateReference<SimulationState> grow_motti(StateReference<SimulationState>, EventParameters);
 
 static std::map<std::string, ParameterizedEventFn<SimulationState>> builtin_events{
         {"grow", grow_acta},
@@ -17,12 +16,6 @@ static std::map<std::string, ParameterizedEventFn<SimulationState>> builtin_even
         {"do_nothing", rest}
 };
 
-static std::map<std::string, ParameterizedEventFn<SimulationState>> motti_events{
-        {"grow", grow_motti},
-        {"grow_motti", grow_motti}
-};
-
 ParameterizedEventFn<SimulationState> base_event_resolver(EventLabelWithParameters);
-
 
 #endif

@@ -35,6 +35,31 @@ public:
     std::function<decltype(Motti4::Motti4Growth)> Growth;
 };
 
+/**
+ * This struct represents the data set necessary to use the Motti4SiteInit and Motti4Growth functions
+ * with the purpose of growing reference trees with Motti4 growth model algorithms. Initiating the
+ * structure is based on the work for using the library via Python FFI in
+ * https://github.com/menu-hanke/pymotti
+ */
+struct Motti4State {
+    Motti4::Motti4Site yy;
+    Motti4::Motti4Trees yp;
+    Motti4::Motti4Saplings ut;
+    Motti4::Motti4KorArray kor;
+    Motti4::Motti4KorArray apv;
+    Motti4::Motti4VcrArray vcr;
+    Motti4::Motti4Ctrl control;
+    Motti4::Motti4FerArray fer;
+    int numtrees = 0;
+    int numfer = 0;
+    int DISABLE_GROWTH_CALIBRATION = 53712;
+    int rv[4];
+
+    Motti4State(StateReference<SimulationState> state);
+    void populate_site(StateReference<SimulationState> state);
+    void populate_trees(StateReference<SimulationState> state);
+};
+
 StateReference<SimulationState> grow_motti(StateReference<SimulationState>, EventParameters);
 
 static std::map<std::string, ParameterizedEventFn<SimulationState>> motti_events{

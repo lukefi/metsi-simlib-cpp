@@ -107,7 +107,7 @@ public:
     explicit SimulationState(const ForestStand&);
     SimulationState(const SimulationState&);
     std::vector<float>& get_vars(const std::string&);
-    const ForestStand& get_stand() { return stand; };
+    ForestStand& get_stand() { return stand; };
 };
 
 #endif

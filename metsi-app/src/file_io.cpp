@@ -7,12 +7,24 @@ YAML::Node read_yaml(const std::string& file_path) {
 
 static std::map<std::string, int> stand_indices{
         {"identifier", 1},
-        {"year", 3}
+        {"year", 3},
+        {"area", 4},
+        {"lat", 6},
+        {"lon", 7},
+        {"masl", 8},
+        {"dd", 10},
+        {"owner_category", 11},
+        {"land_use_category", 12},
+        {"soil_peatland_category", 13},
+        {"site_type_category", 14},
+        {"tax_class_reduction", 15},
+        {"tax_class", 16},
 };
 
 static std::map<std::string, int> tree_indices{
         {"identifier", 1},
         {"species", 2},
+        {"origin", 3},
         {"stems_ha", 4},
         {"dbh", 5},
         {"height", 6},
